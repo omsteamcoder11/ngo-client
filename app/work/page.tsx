@@ -1,182 +1,369 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
-import { 
-  Globe, 
-  MapPin, 
-  Calendar, 
-  ArrowRight, 
-  Sparkles,
-  Heart,
-  History
-} from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  Sparkles,
+  CheckCircle2,
+  Target,
+  ShieldCheck,
+  Globe2,
+  HelpCircle,
+  ArrowRight,
+  TrendingUp,
+  Award,
+} from "lucide-react";
 
-// Animation Variants
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
+const fadeUp = {
+  initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true },
-  transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }
+  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
 };
 
-const staggerContainer = {
+const stagger = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
+  visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
 };
 
-export default function WhereWeWorkPage() {
-  const countries = [
-    { name: "Colombia", since: 1980, image: "🇨🇴", description: "Empowering children to conquer poverty and systemic lack of opportunity in urban and rural sectors." },
-    { name: "Dominican Republic", since: 1983, image: "🇩🇴", description: "Working to overcome educational disparities and social challenges in high-density poverty areas." },
-    { name: "Ecuador", since: 1988, image: "🇪🇨", description: "Providing skills and resources to break generational poverty cycles for over 70% of vulnerable youth." },
-    { name: "Guatemala", since: 1979, image: "🇬🇹", description: "Creating safe spaces and providing essential healthcare and schooling in the 'Land of Eternal Spring'." },
-    { name: "Honduras", since: 1984, image: "🇭🇳", description: "Fighting high crime and dropout rates with robust educational and vocational training programs." },
-    { name: "India", since: 1980, image: "🇮🇳", description: "Focused on youth empowerment and essential healthcare access across underserved regional communities." },
-    { name: "Mexico", since: 2004, image: "🇲🇽", description: "Navigating urban employment challenges in Jalisco to provide stable futures for uneducated adults." },
-    { name: "Philippines", since: 1979, image: "🇵🇭", description: "Increasing health and job opportunities across 7,000+ islands to meet basic family needs." },
-    { name: "Zambia", since: 2004, image: "🇿🇲", description: "Providing comprehensive health and dental care where 60% of the population lives below the poverty line." },
-    { name: "United States", since: 1994, region: "Little Rock, AR", image: "🇺🇸", description: "Partnering with 30+ organizations to tackle child-poverty rates through community-based programs." },
-  ];
+const itemFade = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
 
+export default function WhyChooseUsPage() {
   return (
-    <main className="bg-white min-h-screen selection:bg-[#009270]/10">
-      
-      {/* --- PREMIUM HERO SECTION --- */}
-      <section className="relative pt-32 pb-24 px-6 bg-[#F8F9F8] overflow-hidden border-b border-gray-100">
-        <div className="max-w-7xl mx-auto relative z-10 text-center">
-          <motion.div {...fadeInUp}>
-            <span className="inline-flex items-center gap-2 text-[#8B235E] font-black tracking-[0.4em] uppercase text-[10px] mb-6 bg-[#8B235E]/5 px-5 py-2 rounded-full border border-[#8B235E]/10">
-              <Globe size={12} className="animate-pulse" /> Global Footprint
+    <main className="bg-white min-h-screen text-gray-800">
+
+      {/* ── HERO ── */}
+      <section className="relative pt-28 pb-20 px-6 overflow-hidden bg-white border-b border-gray-100">
+        <div className="max-w-5xl mx-auto text-center relative z-10">
+          <motion.div {...fadeUp}>
+            <span
+              className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-6 border"
+              style={{ color: "#7B2D8B", background: "#F3E8F7", borderColor: "#DFC5E8" }}
+            >
+              <Sparkles size={11} /> Excellence in Impact
             </span>
-            <h1 className="text-6xl md:text-9xl font-black text-[#2D2D2D] tracking-tighter leading-[0.85] mb-8 uppercase italic">
-              Where we <br /> <span className="text-[#009270] not-italic">Deliver Help.</span>
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight text-gray-900 mb-5">
+              Why Choose{" "}
+              <span style={{ color: "#7B2D8B" }}>ChildSave?</span>
             </h1>
-            <p className="mt-4 text-xl md:text-2xl text-gray-500 font-medium max-w-2xl mx-auto leading-relaxed">
-              ChildSave changes lives in 10 countries. We focus on areas of dense poverty 
-              to deliver the greatest impact with effective resources.
+            <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
+              Find the best organization to sponsor a child — a sponsorship experience
+              that fundamentally alters a child's life trajectory.
             </p>
           </motion.div>
         </div>
-        
-        {/* Background Decorative Element */}
-        <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-[#009270]/5 rounded-full blur-3xl" />
       </section>
 
-      {/* --- COUNTRY DIRECTORY GRID --- */}
-      <section className="py-24 px-6 max-w-7xl mx-auto">
-        <motion.div 
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {countries.map((country) => (
-            <CountryCard key={country.name} country={country} />
-          ))}
-        </motion.div>
-      </section>
-
-      {/* --- LEGACY SECTION --- */}
-      <section className="py-24 px-6 bg-[#2D2D2D] text-white overflow-hidden relative">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
-        
-        <div className="max-w-4xl mx-auto relative z-10 text-center">
-          <motion.div {...fadeInUp}>
-            <History className="text-[#009270] mx-auto mb-8" size={48} />
-            <h2 className="text-4xl md:text-7xl font-black uppercase italic tracking-tighter mb-8 leading-none">
-              A Legacy of <span className="text-[#009270]">Hope.</span>
-            </h2>
-            <p className="text-gray-400 text-xl md:text-2xl font-medium leading-relaxed mb-12">
-              Our anniversary reflects decades dedicated to helping families realize 
-              better lives. We are grateful for the global community that makes this 
-              impact possible.
+      {/* ── INTRO QUOTE ── */}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-3xl mx-auto">
+          <motion.div {...fadeUp}>
+            <div
+              className="w-12 h-1 rounded-full mb-8"
+              style={{ background: "#7B2D8B" }}
+            />
+            <p className="text-2xl md:text-3xl font-semibold text-gray-900 leading-snug mb-6">
+              "Choosing the best child sponsorship program is an important decision –
+              one that aligns with your values and is proven effective."
             </p>
-            <div className="w-24 h-1 bg-[#009270] mx-auto rounded-full" />
+            <p className="text-base text-gray-500 leading-relaxed">
+              Though all child sponsorship charities work to benefit children, there are many
+              distinctions. We invite you to explore more about ChildSave and our collective
+              mission of bringing people together to end poverty for good.
+            </p>
           </motion.div>
         </div>
       </section>
 
-      {/* --- FINAL CTA --- */}
-      <section className="py-32 px-6">
-        <motion.div 
-          {...fadeInUp}
-          className="max-w-4xl mx-auto text-center bg-[#F8F9F8] rounded-[4rem] p-12 md:p-24 border border-gray-100 shadow-2xl shadow-gray-100 relative"
-        >
-          <div className="absolute top-10 right-10 opacity-10">
-            <Sparkles size={80} className="text-[#009270]" />
+      {/* ── KEY CONSIDERATIONS ── */}
+      <section className="py-20 px-6 bg-gray-50 border-y border-gray-100">
+        <div className="max-w-6xl mx-auto">
+          <motion.h2
+            {...fadeUp}
+            className="text-2xl md:text-4xl font-extrabold text-gray-900 text-center mb-14 tracking-tight"
+          >
+            Key Similarities{" "}
+            <span style={{ color: "#7B2D8B" }}>&</span>{" "}
+            Differences
+          </motion.h2>
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          >
+            <ConsiderationCard
+              icon={<Target size={26} style={{ color: "#7B2D8B" }} />}
+              title="The Approach"
+              content="ChildSave uses a holistic approach that combines individual child development with community empowerment. Your sponsored child receives direct support like education and healthcare."
+            />
+            <ConsiderationCard
+              icon={<TrendingUp size={26} style={{ color: "#7B2D8B" }} />}
+              title="The Funding"
+              content="ChildSave relies primarily on individual donations. Government grants account for less than 1% of our revenue, ensuring your support directly fuels our mission."
+            />
+            <ConsiderationCard
+              icon={<Globe2 size={26} style={{ color: "#7B2D8B" }} />}
+              title="Vision & Mission"
+              content="ChildSave is a secular organization. Our supporters, staff, and families span all beliefs and backgrounds. We are united by a common goal: ending generational poverty."
+            />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── WHAT TO LOOK FOR ── */}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div
+            className="rounded-3xl p-10 md:p-16 text-white relative overflow-hidden"
+            style={{ background: "#2D0A3E" }}
+          >
+            <div className="absolute top-0 right-0 opacity-5 p-10 pointer-events-none">
+              <ShieldCheck size={180} />
+            </div>
+            <motion.h2
+              {...fadeUp}
+              className="text-2xl md:text-4xl font-extrabold mb-12 tracking-tight leading-snug"
+            >
+              What to look for in a{" "}
+              <span style={{ color: "#C084E8" }}>Sponsorship Program</span>
+            </motion.h2>
+            <motion.div
+              variants={stagger}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-5"
+            >
+              {[
+                "Interest in specific regions – focused on underserved communities in India.",
+                "Focus on specific causes – education, health, and employment readiness.",
+                "Religious affiliation – we are secular, welcoming all backgrounds.",
+                "Financial transparency – audited financials and top independent ratings.",
+                "Communication opportunities – write letters, send photos, or visit.",
+                "Annual impact reports – clear outcomes and stories of change.",
+                "Community empowerment – benefiting families and neighborhoods.",
+              ].map((text, i) => (
+                <motion.div key={i} variants={itemFade} className="flex items-start gap-3">
+                  <CheckCircle2
+                    size={18}
+                    className="mt-0.5 shrink-0"
+                    style={{ color: "#2A9D5C" }}
+                  />
+                  <p className="text-gray-300 text-sm leading-relaxed">{text}</p>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
-          <Heart className="text-[#8B235E] mx-auto mb-8 fill-[#8B235E]" size={48} />
-          <h3 className="text-4xl md:text-6xl font-black text-[#2D2D2D] mb-8 uppercase italic tracking-tighter leading-none">
-            Join the <br /> <span className="text-[#009270]">Movement.</span>
+        </div>
+      </section>
+
+      {/* ── COMPARISON TABLE ── */}
+      <section className="py-20 px-6 bg-gray-50 border-y border-gray-100">
+        <div className="max-w-4xl mx-auto">
+          <motion.h2
+            {...fadeUp}
+            className="text-2xl md:text-4xl font-extrabold text-gray-900 text-center mb-12 tracking-tight"
+          >
+            How ChildSave{" "}
+            <span style={{ color: "#7B2D8B" }}>Compares</span>
+          </motion.h2>
+          <motion.div
+            {...fadeUp}
+            className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm"
+          >
+            <table className="min-w-full bg-white">
+              <thead>
+                <tr style={{ background: "#7B2D8B" }}>
+                  <th className="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-widest text-white">
+                    Organization Feature
+                  </th>
+                  <th className="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-widest text-white">
+                    ChildSave Metric
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 text-sm font-medium">
+                {[
+                  ["Founded", "2010 (India operations since 2012)"],
+                  ["Monthly sponsorship amount", "₹1,500"],
+                  ["% of funds for programs", "82%"],
+                  ["Focus area", "Child + Community (holistic)"],
+                  ["Government funding", "No (less than 1%)"],
+                  ["Religious affiliation", "None (secular)"],
+                  ["Wellness Programs", "✓ Included"],
+                  ["Online Photo Access", "✓ Full History"],
+                ].map(([label, value], i) => (
+                  <tr key={i} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 text-gray-400 text-xs font-semibold uppercase tracking-wider">
+                      {label}
+                    </td>
+                    <td className="px-6 py-4 text-gray-800 font-semibold">{value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <motion.div {...fadeUp} className="flex items-center gap-3 mb-12">
+            <HelpCircle size={28} style={{ color: "#7B2D8B" }} />
+            <h2 className="text-2xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+              Common{" "}
+              <span style={{ color: "#7B2D8B" }}>Questions</span>
+            </h2>
+          </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {[
+              {
+                q: "Can I communicate with my sponsored child?",
+                a: "Yes! You can write letters and send photos anytime. Your words provide hope and encouragement. We also encourage you to visit your child to see the impact in person.",
+              },
+              {
+                q: "How long does sponsorship last?",
+                a: "A child's sponsorship typically continues until they turn 19, after which they graduate from the program. You may cancel at any time.",
+              },
+              {
+                q: "Can I send extra gifts or money?",
+                a: "Yes, you can make an 'Extra Gift' of ₹2,500 or more through your online account. Your child and family will be thrilled to know you are thinking of them.",
+              },
+              {
+                q: "How do you ensure child safety?",
+                a: "Child safeguarding is our top priority. We have a comprehensive policy covering protocols, training, and abuse prevention for all interactions.",
+              },
+            ].map(({ q, a }, i) => (
+              <motion.div
+                key={i}
+                {...fadeUp}
+                className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm transition-colors"
+                style={{ borderColor: "transparent" }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.borderColor = "#DFC5E8")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.borderColor = "transparent")
+                }
+              >
+                <h3 className="text-base font-bold text-gray-900 mb-3">{q}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{a}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CHARITY RATINGS ── */}
+      <section className="py-20 px-6" style={{ background: "#2D0A3E" }}>
+        <div className="max-w-5xl mx-auto">
+          <motion.div {...fadeUp} className="text-center mb-14">
+            <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight mb-3">
+              Verified{" "}
+              <span style={{ color: "#2A9D5C" }}>Trust</span>
+            </h2>
+            <p className="text-gray-400 text-base max-w-xl mx-auto">
+              Trusted by the industry's most rigorous watchdogs for efficiency and transparency.
+            </p>
+          </motion.div>
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4"
+          >
+            {[
+              { name: "Charity Navigator", rating: "4/4 Stars", detail: "100 in transparency" },
+              { name: "CharityWatch", rating: "A−", detail: "Financial efficiency" },
+              { name: "Great Nonprofits", rating: "Top-Rated", detail: "Supporter feedback" },
+              { name: "Candid", rating: "Platinum", detail: "Highest level" },
+              { name: "BBB Alliance", rating: "Accredited", detail: "Meets 20 standards" },
+            ].map(({ name, rating, detail }, i) => (
+              <motion.div
+                key={i}
+                variants={itemFade}
+                className="rounded-2xl p-6 text-center border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+              >
+                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">
+                  {name}
+                </p>
+                <p
+                  className="text-xl font-extrabold mb-1"
+                  style={{ color: "#2A9D5C" }}
+                >
+                  {rating}
+                </p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold">
+                  {detail}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="py-24 px-6 bg-white">
+        <motion.div
+          {...fadeUp}
+          className="max-w-2xl mx-auto text-center rounded-3xl p-12 md:p-16 border shadow-sm"
+          style={{ background: "#F9F4FB", borderColor: "#DFC5E8" }}
+        >
+          <Award size={44} className="mx-auto mb-6" style={{ color: "#7B2D8B" }} />
+          <h3 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
+            Ready to make a{" "}
+            <span style={{ color: "#7B2D8B" }}>Difference?</span>
           </h3>
-          <p className="text-gray-500 text-xl font-medium mb-12 max-w-xl mx-auto">
-            Your support helps children in these specific communities break free 
-            from the cycle of poverty.
+          <p className="text-gray-500 text-base mb-10 max-w-md mx-auto leading-relaxed">
+            Your partnership with ChildSave transforms a child's future. Start your
+            sponsorship journey today.
           </p>
           <Link
-            href="/sponsor"
-            className="inline-flex items-center gap-3 bg-[#2D2D2D] text-white px-12 py-6 rounded-2xl font-black uppercase tracking-[0.2em] text-xs hover:bg-[#009270] transition-all shadow-xl shadow-gray-200 group"
+            href="/sponsor-a-child"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-white text-sm font-bold tracking-wide transition-opacity hover:opacity-90 shadow-md"
+            style={{ background: "#2A9D5C" }}
           >
-            Sponsor a Child <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
+            Sponsor a Child <ArrowRight size={16} />
           </Link>
         </motion.div>
       </section>
+
     </main>
   );
 }
 
-/* --- REUSABLE COMPONENTS --- */
+/* ── SUB COMPONENTS ── */
 
-function CountryCard({ country }: { country: any }) {
+function ConsiderationCard({
+  icon,
+  title,
+  content,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  content: string;
+}) {
   return (
-    <motion.div 
-      variants={fadeInUp}
-      className="group bg-white rounded-[2.5rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.02)] border border-gray-100 hover:border-[#009270]/30 hover:shadow-[0_40px_80px_rgba(0,0,0,0.08)] transition-all duration-500 flex flex-col"
+    <motion.div
+      variants={itemFade}
+      className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:-translate-y-1 transition-transform duration-300"
     >
-      <div className="flex justify-between items-start mb-8">
-        <div className="w-16 h-16 bg-[#F8F9F8] rounded-2xl flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform duration-500">
-          {country.image}
-        </div>
-        <div className="bg-[#009270]/5 px-4 py-1.5 rounded-full border border-[#009270]/10">
-           <span className="text-[9px] font-black text-[#009270] uppercase tracking-widest flex items-center gap-2">
-            <Calendar size={10} /> Since {country.since}
-           </span>
-        </div>
-      </div>
-
-      <h2 className="text-3xl font-black text-[#2D2D2D] uppercase italic tracking-tighter mb-2 group-hover:text-[#009270] transition-colors">
-        {country.name}
-      </h2>
-      
-      {country.region && (
-        <div className="flex items-center gap-1.5 mb-4 text-[#8B235E]">
-          <MapPin size={12} className="fill-[#8B235E]/20" />
-          <span className="text-[10px] font-bold uppercase tracking-widest">{country.region}</span>
-        </div>
-      )}
-
-      <p className="text-gray-500 font-medium leading-relaxed mb-8 flex-grow">
-        {country.description}
-      </p>
-
-      <Link 
-        href={`/where-we-work/${country.name.toLowerCase().replace(/\s/g, "-")}`}
-        className="flex items-center justify-between pt-6 border-t border-gray-50 group-hover:border-[#009270]/20 transition-colors"
+      <div
+        className="mb-5 p-3 rounded-xl w-fit"
+        style={{ background: "#F3E8F7" }}
       >
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#2D2D2D]">View Regional Impact</span>
-        <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#009270] group-hover:text-white transition-all">
-          <ArrowRight size={14} />
-        </div>
-      </Link>
+        {icon}
+      </div>
+      <h3 className="text-lg font-bold text-gray-900 mb-3">{title}</h3>
+      <p className="text-sm text-gray-500 leading-relaxed">{content}</p>
     </motion.div>
   );
 }
-
-
-

@@ -96,14 +96,14 @@ export default function LeadershipPage() {
   ];
 
   return (
-    <main className="bg-white overflow-x-hidden">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 via-white to-blue-50/30 py-16 md:py-32">
+    <main className="bg-white overflow-x-hidden text-slate-900">
+      {/* Hero Section - Matching Logo Gradient Palette */}
+      <section className="bg-gradient-to-br from-[#fdf2f8] via-white to-[#f0f9f6] py-16 md:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-gray-900 tracking-tighter leading-[1.1]">
-            Meet our <span className="text-blue-600">global</span> <br className="hidden md:block" /> leadership team
+            Meet our <span className="text-[#8b265a]">global</span> <br className="hidden md:block" /> leadership team
           </h1>
-          <p className="mt-8 text-lg md:text-2xl text-gray-600 max-w-3xl mx-auto font-medium">
+          <p className="mt-8 text-lg md:text-2xl text-gray-600 max-w-3xl mx-auto font-medium leading-relaxed">
             Key staff of ChildSave — dedicated leaders committed to ending child
             poverty.
           </p>
@@ -115,9 +115,9 @@ export default function LeadershipPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 md:mb-24">
             <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight uppercase">
-              Executive <span className="text-blue-600">Leadership</span>
+              Executive <span className="text-[#8b265a]">Leadership</span>
             </h2>
-            <div className="w-20 h-1.5 bg-blue-600 mx-auto mt-4 rounded-full"></div>
+            <div className="w-20 h-1.5 bg-[#1e6b52] mx-auto mt-4 rounded-full"></div>
             <p className="mt-6 text-lg md:text-xl text-gray-600 font-medium">
               Guiding our mission with passion and expertise.
             </p>
@@ -129,15 +129,15 @@ export default function LeadershipPage() {
                 key={idx}
                 className="group bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-100 text-center"
               >
-                <div className="w-24 h-24 bg-blue-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 shadow-inner">
-                  <span className="text-4xl font-black text-blue-600">
+                <div className="w-24 h-24 bg-[#fdf2f8] rounded-[2rem] flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 shadow-inner">
+                  <span className="text-4xl font-black text-[#8b265a]">
                     {leader.name.charAt(0)}
                   </span>
                 </div>
                 <h3 className="text-xl font-black text-gray-900 tracking-tight">
                   {leader.name}
                 </h3>
-                <p className="text-blue-600 text-xs font-black uppercase tracking-[0.15em] mt-2 mb-1">
+                <p className="text-[#8b265a] text-xs font-black uppercase tracking-[0.15em] mt-2 mb-1">
                   {leader.title}
                 </p>
                 <p className="text-gray-400 text-xs font-bold italic tracking-wider mb-4">
@@ -154,30 +154,30 @@ export default function LeadershipPage() {
       </section>
 
       {/* Global Agency Directors */}
-      <section className="py-16 md:py-28 bg-gray-50 border-y border-gray-100">
+      <section className="py-16 md:py-28 bg-slate-50 border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight uppercase">
-              Global Agency <span className="text-blue-600">Directors</span>
+              Global Agency <span className="text-[#1e6b52]">Directors</span>
             </h2>
             <p className="mt-6 text-lg md:text-xl text-gray-600 font-medium">
               Leading our work on the ground in communities around the world.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {agencyDirectors.map((director, idx) => (
               <div
                 key={idx}
-                className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 text-center flex items-center gap-4 text-left"
+                className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 flex items-center gap-4 text-left"
               >
-                <div className="flex-shrink-0 w-14 h-14 bg-green-50 rounded-xl flex items-center justify-center group-hover:bg-green-600 transition-colors duration-300">
-                  <span className="text-xl font-black text-green-600 group-hover:text-white">
+                <div className="flex-shrink-0 w-14 h-14 bg-[#f0f9f6] rounded-xl flex items-center justify-center group-hover:bg-[#1e6b52] transition-colors duration-300">
+                  <span className="text-xl font-black text-[#1e6b52] group-hover:text-white">
                     {director.name.charAt(0)}
                   </span>
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900 text-lg group-hover:text-blue-600 transition-colors">
+                  <h3 className="font-bold text-gray-900 text-lg group-hover:text-[#8b265a] transition-colors">
                     {director.name}
                   </h3>
                   <p className="text-gray-500 text-xs font-black uppercase tracking-widest">{director.country}</p>
@@ -193,7 +193,7 @@ export default function LeadershipPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight uppercase">
-              Board of <span className="text-blue-600">Directors</span>
+              Board of <span className="text-[#8b265a]">Directors</span>
             </h2>
             <p className="mt-6 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto font-medium leading-relaxed">
               Business, nonprofit and innovation leaders — all with a heart for
@@ -205,23 +205,23 @@ export default function LeadershipPage() {
             {boardMembers.map((member, idx) => (
               <div
                 key={idx}
-                className="bg-gray-50 rounded-2xl p-8 text-center border border-gray-100 hover:bg-white hover:shadow-lg transition-all duration-300 group"
+                className="bg-slate-50 rounded-2xl p-8 text-center border border-gray-100 hover:bg-white hover:border-[#8b265a] hover:shadow-lg transition-all duration-300 group"
               >
-                <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform">
-                  <span className="text-2xl font-black text-purple-600">
+                <div className="w-16 h-16 bg-[#fdf2f8] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:rotate-12 transition-transform">
+                  <span className="text-2xl font-black text-[#8b265a]">
                     {member.name.charAt(0)}
                   </span>
                 </div>
                 <h3 className="font-bold text-gray-900 text-lg">{member.name}</h3>
-                <p className="text-blue-600 text-xs font-black uppercase tracking-widest mt-1">{member.role}</p>
+                <p className="text-[#1e6b52] text-xs font-black uppercase tracking-widest mt-1">{member.role}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Bottom CTA */}
-      <div className="bg-blue-600 py-20 md:py-28 relative overflow-hidden">
+      {/* Bottom CTA - Utilizing the Plum Brand Color */}
+      <div className="bg-[#8b265a] py-20 md:py-28 relative overflow-hidden">
         {/* Background Decorative Circle */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
         
@@ -229,13 +229,13 @@ export default function LeadershipPage() {
           <h3 className="text-3xl md:text-5xl font-black text-white mb-8 tracking-tight leading-tight uppercase">
             Join our team
           </h3>
-          <p className="text-blue-50 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-medium opacity-90 leading-relaxed">
+          <p className="text-pink-100 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-medium opacity-90 leading-relaxed">
             We're always looking for passionate people to help us end child
             poverty. See current openings and become part of our mission.
           </p>
           <a
             href="/careers"
-            className="inline-block bg-white text-blue-600 px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-gray-100 transition-all shadow-2xl active:scale-95"
+            className="inline-block bg-white text-[#8b265a] px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-[#fdf2f8] transition-all shadow-2xl active:scale-95"
           >
             View Careers
           </a>
@@ -244,6 +244,3 @@ export default function LeadershipPage() {
     </main>
   );
 }
-
-
-

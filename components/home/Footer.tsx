@@ -82,7 +82,7 @@ const NAV_ITEMS = [
       ],
       [
         { label: 'Campaigns', href: '/campaigns' },
-        { label: 'Field Updates', href: '/field-updates' },
+        // { label: 'Field Updates', href: '/field-updates' },
         { label: 'Media & Gallery', href: '/gallery' },
       ],
     ],

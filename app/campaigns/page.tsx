@@ -24,7 +24,7 @@ interface Campaign {
   donors: number;
   days_left: number | null;
   status: CampaignStatus;
-    end_date: string | null;  // ✅ add this
+  end_date: string | null;
   start_date: string | null;
 }
 
@@ -128,61 +128,55 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
         </div>
 
         <div className="flex items-center justify-between py-3 border-t border-gray-50 mb-4">
-  <div className="flex items-center gap-1.5 text-gray-500">
-    <Users size={13} />
-    <span className="text-xs font-semibold">{(campaign.donors || 0).toLocaleString()} donors</span>
-  </div>
-  {campaign.status !== "completed" && campaign.days_left !== null && (
-    <div className="flex items-center gap-1.5">
-      {campaign.days_left <= 10 && <Flame size={12} className="text-red-500" />}
-      <span className={`text-xs font-bold ${campaign.days_left <= 10 ? "text-red-500" : "text-gray-500"}`}>
-        {campaign.days_left <= 0 ? "Ends today!" : campaign.days_left <= 10 ? `${campaign.days_left} days left` : `${campaign.days_left} days remaining`}
-      </span>
-    </div>
-  )}
-  {campaign.status === "completed" && (
-    <div className="flex items-center gap-1.5 text-green-600">
-      <CheckCircle2 size={13} />
-      <span className="text-xs font-bold">Fully Funded</span>
-    </div>
-  )}
-</div>
-
-{/* ✅ Date range */}
-{(campaign.end_date) && campaign.status !== "completed" && (
-  <div className="flex items-center gap-1 text-gray-400 mb-3 text-[11px]">
-    <span>🏁 Ends: {new Date(campaign.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+          <div className="flex items-center gap-1.5 text-gray-500">
+            <Users size={13} />
+            <span className="text-xs font-semibold">{(campaign.donors || 0).toLocaleString()} donors</span>
+          </div>
+        {campaign.status !== "completed" && campaign.days_left !== null && campaign.raised_amount < campaign.goal_amount && (
+     <div className="flex items-center gap-1.5">
+         {campaign.days_left <= 10 && <Flame size={12} className="text-red-500" />}
+    <span className={`text-xs font-bold ${campaign.days_left <= 10 ? "text-red-500" : "text-gray-500"}`}>
+      {campaign.days_left <= 0 ? "Ends today!" : campaign.days_left <= 10 ? `${campaign.days_left} days left` : `${campaign.days_left} days remaining`}
+    </span>
   </div>
 )}
+        {campaign.raised_amount >= campaign.goal_amount && (
+    <div className="flex items-center gap-1.5 text-green-600">
+     <CheckCircle2 size={13} />
+    <span className="text-xs font-bold">Goal Achieved</span>
+  </div>
+)}
+        </div>
 
-        {campaign.status !== "completed" ? (
-          <div className="flex gap-2">
-            <Link href={`/donate?campaign=${campaign.id}`}
-              className="flex-1 text-center py-2.5 rounded-xl font-black text-sm uppercase tracking-wider text-white hover:opacity-90 active:scale-95 transition-all"
-              style={{ backgroundColor: color }}>
-              Donate Now
-            </Link>
-            <button
-              aria-label="Share campaign"
-              onClick={() => {
-                navigator.clipboard.writeText(`${window.location.origin}/campaigns/${campaign.id}`);
-                const toast = document.createElement("div");
-                toast.className = "fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1a1a2e] text-white px-5 py-3 rounded-xl shadow-xl text-sm font-semibold z-50";
-                toast.innerText = "Campaign link copied!";
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 2000);
-              }}
-              className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#8B235E] hover:border-[#8B235E] transition-all active:scale-95 flex-shrink-0"
-            >
-              <Share2 size={14} />
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold bg-gray-50 text-gray-400">
-            <CheckCircle2 size={15} className="text-[#009270]" />
-            Goal Achieved
+        {campaign.end_date && campaign.status !== "completed" && (
+          <div className="flex items-center gap-1 text-gray-400 mb-3 text-[11px]">
+            <span>🏁 Ends: {new Date(campaign.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
           </div>
         )}
+
+        {/* ✅ CHANGED: Always show Donate Now button for all campaigns */}
+        <div className="flex gap-2">
+          <Link href={`/donate?campaign=${campaign.id}`}
+            className="flex-1 text-center py-2.5 rounded-xl font-black text-sm uppercase tracking-wider text-white hover:opacity-90 active:scale-95 transition-all"
+            style={{ backgroundColor: color }}>
+            Donate Now
+          </Link>
+          <button
+            aria-label="Share campaign"
+            onClick={() => {
+              navigator.clipboard.writeText(`${window.location.origin}/campaigns/${campaign.id}`);
+              const toast = document.createElement("div");
+              toast.className = "fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#1a1a2e] text-white px-5 py-3 rounded-xl shadow-xl text-sm font-semibold z-50";
+              toast.innerText = "Campaign link copied!";
+              document.body.appendChild(toast);
+              setTimeout(() => toast.remove(), 2000);
+            }}
+            className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-400 hover:text-[#8B235E] hover:border-[#8B235E] transition-all active:scale-95 flex-shrink-0"
+          >
+            <Share2 size={14} />
+          </button>
+        </div>
+
       </div>
     </div>
   );

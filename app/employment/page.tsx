@@ -11,27 +11,32 @@ export default function EmploymentPage() {
   const programComponents = [
     {
       title: "Technical Training",
-      description: "Scholarships for college or vocational education to prepare young people for the local job market.",
+      description:
+        "Scholarships for college or vocational education to prepare young people for the local job market.",
       icon: "🎓",
     },
     {
       title: "Career Readiness",
-      description: "Individual support from staff to create résumés, practice interviewing, and connect with employers.",
+      description:
+        "Individual support from staff to create résumés, practice interviewing, and connect with employers.",
       icon: "📄",
     },
     {
       title: "Life Skills",
-      description: "Youth become confident, strong communicators and value-driven team players.",
+      description:
+        "Youth become confident, strong communicators and value-driven team players.",
       icon: "💪",
     },
     {
       title: "Job Placement",
-      description: "We help place our youth in jobs with local companies and provide guidance as they begin careers.",
+      description:
+        "We help place our youth in jobs with local companies and provide guidance as they begin careers.",
       icon: "🤝",
     },
     {
       title: "Entrepreneurship",
-      description: "Training on business fundamentals for youth interested in launching small-scale ventures.",
+      description:
+        "Training on business fundamentals for youth interested in launching small-scale ventures.",
       icon: "💡",
     },
   ];
@@ -48,18 +53,64 @@ export default function EmploymentPage() {
     { name: "Zambia", since: 2015 },
   ];
 
+  const stats = [
+    { value: "500+", label: "Youth Trained Annually" },
+    { value: "75%", label: "Hired in 6 Months" },
+    { value: "40+", label: "Employer Partners" },
+  ];
+
+  // Logo-matched colors
+  const MAROON = "#7B1F5E";
+  const GREEN = "#1A7A4A";
+  const CREAM = "#FAF7F2";
+  const CREAM2 = "#F3EDE4";
+  const TEXT = "#1C1C1C";
+  const MUTED = "#6B6560";
+
   return (
-    <main className="bg-white overflow-x-hidden">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 to-white py-12 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="text-xs sm:text-sm font-bold text-blue-600 uppercase tracking-[0.2em]">
-            Change a generation
-          </span>
-          <h1 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight">
-            Into Employment®
+    <main style={{ background: CREAM, color: TEXT, fontFamily: "'Arial', sans-serif" }}>
+
+      {/* ── HERO: simple rectangle, no drama ─────────────────── */}
+      <section
+        style={{
+          background: MAROON,
+          padding: "clamp(2.5rem, 5vw, 4rem) clamp(1.2rem, 5vw, 5rem)",
+        }}
+      >
+        <div style={{ maxWidth: "900px" }}>
+          <p
+            style={{
+              fontSize: "clamp(0.7rem, 1.1vw, 0.8rem)",
+              fontWeight: 700,
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.6)",
+              margin: "0 0 0.9rem",
+            }}
+          >
+            Change a Generation
+          </p>
+          <h1
+            style={{
+              fontSize: "clamp(2rem, 5.5vw, 4rem)",
+              fontWeight: 800,
+              color: "#fff",
+              lineHeight: 1.1,
+              letterSpacing: "-0.01em",
+              margin: "0 0 1.2rem",
+            }}
+          >
+            Into Employment<span style={{ color: "rgba(255,255,255,0.4)", fontWeight: 400 }}>®</span>
           </h1>
-          <p className="mt-6 text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p
+            style={{
+              fontSize: "clamp(0.9rem, 1.6vw, 1.05rem)",
+              color: "rgba(255,255,255,0.78)",
+              lineHeight: 1.75,
+              maxWidth: "580px",
+              margin: 0,
+            }}
+          >
             Our programs prepare young people to fill the needs of local job
             markets. Scholarships provide access to college, technical training,
             job readiness and life skills.
@@ -67,34 +118,89 @@ export default function EmploymentPage() {
         </div>
       </section>
 
-      {/* Tagline Card */}
-      <section className="pb-12 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-blue-600 rounded-3xl p-6 sm:p-10 shadow-xl shadow-blue-100">
-            <p className="text-base sm:text-lg md:text-xl text-white font-medium leading-relaxed">
-              Into Employment provides young people the coaching, 21st-century
-              life skills and job-placement support to find — and compete for —
-              careers in their communities.
-            </p>
-          </div>
-        </div>
+      {/* ── PULL QUOTE ───────────────────────────────────────── */}
+      <section
+        style={{
+          background: CREAM2,
+          borderLeft: `5px solid ${GREEN}`,
+          padding: "clamp(1.8rem, 4vw, 3rem) clamp(1.5rem, 5vw, 5rem)",
+        }}
+      >
+        <p
+          style={{
+            fontSize: "clamp(0.95rem, 1.7vw, 1.15rem)",
+            color: TEXT,
+            lineHeight: 1.75,
+            maxWidth: "780px",
+            margin: "0 auto",
+            fontStyle: "italic",
+          }}
+        >
+          Into Employment provides young people the coaching, 21st-century life
+          skills and job-placement support to find — and compete for — careers
+          in their communities.
+        </p>
       </section>
 
-      {/* Program Components Grid */}
-      <section className="py-12 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
-            {programComponents.map((component) => (
+      {/* ── PROGRAM COMPONENTS ───────────────────────────────── */}
+      <section style={{ background: CREAM, padding: "clamp(2.5rem, 5vw, 4rem) clamp(1.2rem, 5vw, 5rem)" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <h2
+            style={{
+              fontSize: "clamp(1rem, 2vw, 1.3rem)",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: MAROON,
+              marginBottom: "1.8rem",
+            }}
+          >
+            Program Components
+          </h2>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))",
+              gap: "1px",
+              background: "#DDD6CE",
+              border: "1px solid #DDD6CE",
+            }}
+          >
+            {programComponents.map((c) => (
               <div
-                key={component.title}
-                className="bg-gray-50 rounded-2xl p-6 text-center hover:bg-white hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col items-center group"
+                key={c.title}
+                style={{
+                  background: "#fff",
+                  padding: "clamp(1.4rem, 2.5vw, 2rem)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.6rem",
+                  borderTop: `3px solid ${MAROON}`,
+                }}
               >
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">{component.icon}</div>
-                <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
-                  {component.title}
+                <div style={{ fontSize: "1.8rem" }}>{c.icon}</div>
+                <h3
+                  style={{
+                    fontSize: "clamp(0.82rem, 1.2vw, 0.92rem)",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    color: MAROON,
+                    margin: 0,
+                  }}
+                >
+                  {c.title}
                 </h3>
-                <p className="text-gray-500 text-xs sm:text-sm leading-relaxed">
-                  {component.description}
+                <p
+                  style={{
+                    fontSize: "clamp(0.78rem, 1.1vw, 0.88rem)",
+                    color: MUTED,
+                    lineHeight: 1.65,
+                    margin: 0,
+                  }}
+                >
+                  {c.description}
                 </p>
               </div>
             ))}
@@ -102,112 +208,261 @@ export default function EmploymentPage() {
         </div>
       </section>
 
-      {/* Detailed Program Offerings */}
-      <section className="py-12 md:py-20 bg-gray-50 border-y border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10 md:mb-16">
-            Into Employment provides
+      {/* ── DETAILED OFFERINGS ───────────────────────────────── */}
+      <section style={{ background: CREAM2, padding: "clamp(2.5rem, 5vw, 4rem) clamp(1.2rem, 5vw, 5rem)" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <h2
+            style={{
+              fontSize: "clamp(1rem, 2vw, 1.3rem)",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: GREEN,
+              marginBottom: "1.8rem",
+            }}
+          >
+            Into Employment Provides
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
-            <DetailCard title="Technical Training" description="Scholarships for college or vocational education to prepare youth." icon="🎓" />
-            <DetailCard title="Life Skills" description="Become confident, strong communicators and value-driven team players." icon="💪" />
-            <DetailCard title="Career Readiness" description="Support to create résumés, practice interviewing, and search for jobs." icon="📄" />
-            <DetailCard title="Job Placement" description="We help place our youth in jobs and provide guidance as they begin." icon="🤝" />
-            <DetailCard title="Entrepreneurship" description="Training on business fundamentals for youth interested in launching ventures." icon="💡" fullWidth />
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: "1px",
+              background: "#DDD6CE",
+              border: "1px solid #DDD6CE",
+            }}
+          >
+            {[
+              { title: "Technical Training", desc: "Scholarships for college or vocational education to prepare youth for the job market.", icon: "🎓" },
+              { title: "Life Skills", desc: "Become confident, strong communicators and value-driven team players.", icon: "💪" },
+              { title: "Career Readiness", desc: "Support to create résumés, practice interviewing, and search for jobs.", icon: "📄" },
+              { title: "Job Placement", desc: "We help place our youth in jobs and provide guidance as they begin their careers.", icon: "🤝" },
+              { title: "Entrepreneurship", desc: "Training on business fundamentals for youth interested in launching small-scale ventures.", icon: "💡" },
+            ].map((item, i) => (
+              <div
+                key={item.title}
+                style={{
+                  background: "#fff",
+                  padding: "clamp(1.4rem, 2.5vw, 2rem)",
+                  display: "flex",
+                  gap: "1rem",
+                  alignItems: "flex-start",
+                  gridColumn: i === 4 ? "1 / -1" : undefined,
+                  borderLeft: `3px solid ${GREEN}`,
+                }}
+              >
+                <span style={{ fontSize: "1.6rem", flexShrink: 0, marginTop: "2px" }}>{item.icon}</span>
+                <div>
+                  <h3
+                    style={{
+                      fontSize: "clamp(0.82rem, 1.2vw, 0.92rem)",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.08em",
+                      color: TEXT,
+                      margin: "0 0 0.4rem",
+                    }}
+                  >
+                    {item.title}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: "clamp(0.78rem, 1.1vw, 0.88rem)",
+                      color: MUTED,
+                      lineHeight: 1.65,
+                      margin: 0,
+                    }}
+                  >
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* India Spotlight Stats */}
-      <section className="py-12 md:py-20 bg-blue-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 sm:mb-12">
+      {/* ── INDIA STATS ──────────────────────────────────────── */}
+      <section style={{ background: CREAM, padding: "clamp(2.5rem, 5vw, 4rem) clamp(1.2rem, 5vw, 5rem)" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <h2
+            style={{
+              fontSize: "clamp(1rem, 2vw, 1.3rem)",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: MAROON,
+              marginBottom: "1.8rem",
+            }}
+          >
             Into Employment in India
           </h2>
-          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
-            <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-blue-100">
-              <div className="text-3xl sm:text-4xl font-black text-blue-600 mb-2">500+</div>
-              <p className="text-gray-600 text-sm sm:text-base font-bold uppercase tracking-wide">Youth Trained Annually</p>
-            </div>
-            <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-blue-100">
-              <div className="text-3xl sm:text-4xl font-black text-blue-600 mb-2">75%</div>
-              <p className="text-gray-600 text-sm sm:text-base font-bold uppercase tracking-wide">Hired in 6 Months</p>
-            </div>
-            <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-blue-100 xs:col-span-2 md:col-span-1">
-              <div className="text-3xl sm:text-4xl font-black text-blue-600 mb-2">40+</div>
-              <p className="text-gray-600 text-sm sm:text-base font-bold uppercase tracking-wide">Employer Partners</p>
-            </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: "1px",
+              background: "#DDD6CE",
+              border: "1px solid #DDD6CE",
+            }}
+          >
+            {stats.map((s) => (
+              <div
+                key={s.label}
+                style={{
+                  background: "#fff",
+                  padding: "clamp(1.8rem, 3.5vw, 2.8rem) clamp(1.2rem, 2.5vw, 2rem)",
+                  textAlign: "center",
+                  borderBottom: `3px solid ${MAROON}`,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "clamp(2.4rem, 5vw, 3.8rem)",
+                    fontWeight: 800,
+                    color: MAROON,
+                    lineHeight: 1,
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  {s.value}
+                </div>
+                <div
+                  style={{
+                    marginTop: "0.7rem",
+                    fontSize: "clamp(0.72rem, 1.1vw, 0.82rem)",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.13em",
+                    color: MUTED,
+                  }}
+                >
+                  {s.label}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Global Presence */}
-      <section className="py-12 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
+      {/* ── GLOBAL PRESENCE ──────────────────────────────────── */}
+      <section style={{ background: CREAM2, padding: "clamp(2.5rem, 5vw, 4rem) clamp(1.2rem, 5vw, 5rem)" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <h2
+            style={{
+              fontSize: "clamp(1rem, 2vw, 1.3rem)",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: GREEN,
+              marginBottom: "1.8rem",
+            }}
+          >
             Global Presence, Local Leadership
           </h2>
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
             {countries.map((country) => (
               <span
                 key={country.name}
-                className={`px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
-                  country.highlighted
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
+                style={{
+                  background: country.highlighted ? MAROON : "#fff",
+                  color: country.highlighted ? "#fff" : TEXT,
+                  border: `1px solid ${country.highlighted ? MAROON : "#CCC5BC"}`,
+                  padding: "0.45rem 1rem",
+                  fontSize: "clamp(0.75rem, 1.1vw, 0.85rem)",
+                  fontWeight: country.highlighted ? 700 : 400,
+                  letterSpacing: "0.03em",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.4rem",
+                }}
               >
-                {country.name} {country.since && <span className="opacity-60 ml-1">({country.since})</span>}
+                {country.name}
+                {country.since && (
+                  <span style={{ opacity: 0.5, fontSize: "0.8em" }}>
+                    ({country.since})
+                  </span>
+                )}
               </span>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <div className="py-12 md:py-20 bg-gray-900 overflow-hidden relative">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <h3 className="text-2xl sm:text-3xl font-bold text-white mb-6">
-            Invest in a young person's future
+      {/* ── CTA ──────────────────────────────────────────────── */}
+      <section
+        style={{
+          background: "#fff",
+          borderTop: `4px solid ${GREEN}`,
+          padding: "clamp(2.5rem, 5vw, 4.5rem) clamp(1.2rem, 5vw, 5rem)",
+        }}
+      >
+        <div style={{ maxWidth: "680px" }}>
+          <h3
+            style={{
+              fontSize: "clamp(1.4rem, 3.5vw, 2.4rem)",
+              fontWeight: 800,
+              color: TEXT,
+              lineHeight: 1.2,
+              letterSpacing: "-0.01em",
+              margin: "0 0 0.9rem",
+            }}
+          >
+            Invest in a young person's future.
           </h3>
-          <p className="text-gray-400 mb-10 text-sm sm:text-lg leading-relaxed max-w-2xl mx-auto">
-            Help young people gain the skills they need to secure sustainable employment and break the cycle of poverty.
+          <p
+            style={{
+              fontSize: "clamp(0.88rem, 1.4vw, 1rem)",
+              color: MUTED,
+              lineHeight: 1.75,
+              margin: "0 0 2rem",
+              maxWidth: "520px",
+            }}
+          >
+            Help young people gain the skills they need to secure sustainable
+            employment and break the cycle of poverty.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch sm:items-center">
-            <a
-              href="/donate"
-              className="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg active:scale-95 text-center"
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+            
+            <a  href="/donate"
+              style={{
+                background: MAROON,
+                color: "#fff",
+                padding: "0.85rem 2.2rem",
+                fontWeight: 700,
+                fontSize: "clamp(0.8rem, 1.2vw, 0.9rem)",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                display: "inline-block",
+              }}
             >
               Support Into Employment
             </a>
-            <a
-              href="/contact"
-              className="border-2 border-white/20 text-white px-8 py-4 rounded-xl font-bold hover:bg-white/10 transition active:scale-95 text-center"
+            
+            <a  href="/contact"
+              style={{
+                background: "transparent",
+                color: GREEN,
+                padding: "0.85rem 2.2rem",
+                fontWeight: 700,
+                fontSize: "clamp(0.8rem, 1.2vw, 0.9rem)",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                display: "inline-block",
+                border: `1.5px solid ${GREEN}`,
+              }}
             >
               Partner With Us
             </a>
           </div>
         </div>
-      </div>
+      </section>
+
     </main>
   );
 }
-
-function DetailCard({ title, description, icon, fullWidth = false }: { title: string; description: string; icon: string; fullWidth?: boolean }) {
-  const containerClass = fullWidth
-    ? "md:col-span-2 bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-200 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 text-center sm:text-left"
-    : "bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-200 flex flex-col items-center sm:items-start text-center sm:text-left";
-
-  return (
-    <div className={containerClass}>
-      <div className="text-4xl sm:text-5xl mb-4 sm:mb-0 shrink-0">{icon}</div>
-      <div>
-        <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">{title}</h3>
-        <p className="text-gray-500 text-sm sm:text-base leading-relaxed">{description}</p>
-      </div>
-    </div>
-  );
-}
-
-
-

@@ -52,8 +52,8 @@ const WORLD_COUNTRIES = [
 ];
 
 const inputBase = "w-full px-4 py-3 rounded-2xl border-2 text-sm font-medium text-gray-800 bg-white/80 placeholder-gray-400 focus:outline-none transition-all duration-200";
-const inputCls = (e?: string) => `${inputBase} ${e ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-blue-500 hover:border-gray-300"}`;
-const selectCls = (e?: string) => `${inputBase} cursor-pointer appearance-none ${e ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-blue-500 hover:border-gray-300"}`;
+const inputCls = (e?: string) => `${inputBase} ${e ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-[#8B235E] hover:border-gray-300"}`;
+const selectCls = (e?: string) => `${inputBase} cursor-pointer appearance-none ${e ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-[#7B1F3A] hover:border-gray-300"}`;
 const ErrorMsg = ({ msg }: { msg?: string }) => msg ? <p className="text-red-500 text-xs mt-1.5 font-medium">{msg}</p> : null;
 
 const initialDonor: DonorDetails = {
@@ -77,7 +77,7 @@ export function DonateForm() {
   const [receiptUrl, setReceiptUrl] = useState("");
   const [donor, setDonor] = useState<DonorDetails>(initialDonor);
 
-  const finalAmount = amount === "custom" ? parseFloat(customAmount) : amount;
+  const finalAmount = amount === "custom" ? (parseFloat(customAmount.replace(/,/g, "")) || 0) : Number(amount);
   const isIndian = donor.donor_category === "indian";
   const isNRI = donor.donor_category === "nri";
   const isForeign = donor.donor_category === "foreign";
@@ -89,7 +89,8 @@ export function DonateForm() {
   };
 
   const validateAmount = () => {
-    if (isNaN(finalAmount) || finalAmount < 100) {
+    const parsed = amount === "custom" ? parseFloat(customAmount.replace(/,/g, "")) : Number(amount);
+    if (!parsed || isNaN(parsed) || parsed < 100) {
       setError("Minimum donation amount is ₹100.");
       return false;
     }
@@ -99,27 +100,25 @@ export function DonateForm() {
 
   const validateDetails = (): boolean => {
     const e: FormErrors = {};
-    if (!donor.name.trim())                                                         e.name = "Full name is required";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(donor.email))                           e.email = "Valid email is required";
-    if (isIndian ? !/^[6-9]\d{9}$/.test(donor.phone) : donor.phone.length < 7)    e.phone = "Valid phone number is required";
-    if (!donor.dob)                                                                 e.dob = "Date of birth is required";
-    // PAN: required for Indian, optional for NRI, not needed for Foreign
-    if (isIndian && !donor.pan_number.trim())                                       e.pan_number = "PAN number is required";
-    if (isNRI && !donor.pan_number.trim())                                          e.pan_number = "PAN number is required";
+    if (!donor.name.trim())                                                          e.name = "Full name is required";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(donor.email))                            e.email = "Valid email is required";
+    if (isIndian ? !/^[6-9]\d{9}$/.test(donor.phone) : donor.phone.length < 7)     e.phone = "Valid phone number is required";
+    if (!donor.dob)                                                                  e.dob = "Date of birth is required";
+    if (isIndian && !donor.pan_number.trim())                                        e.pan_number = "PAN number is required";
+    if (isNRI && !donor.pan_number.trim())                                           e.pan_number = "PAN number is required";
     if ((isIndian || isNRI) && donor.pan_number && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(donor.pan_number.toUpperCase())) e.pan_number = "Invalid PAN format (e.g. ABCDE1234F)";
-    // Passport: required for NRI and Foreign
-    if ((isNRI || isForeign) && !donor.passport_number.trim())                     e.passport_number = "Passport number is required";
-    if (!donor.address_line1.trim())                                                e.address_line1 = "Address is required";
-    if (!donor.city.trim())                                                         e.city = "City is required";
-    if (isIndian && !donor.state.trim())                                            e.state = "State is required";
-    if (!isIndian && !donor.country.trim())                                         e.country = "Country is required";
-    if (isIndian && !/^\d{6}$/.test(donor.pincode))                                e.pincode = "Valid 6-digit pincode required";
-    if (!isIndian && !donor.pincode.trim())                                         e.pincode = "ZIP / Postal code is required";
-    if (donor.isCompany && !donor.company_name.trim())                             e.company_name = "Company name is required";
-    if (donor.isCompany && !donor.gst_number.trim())                               e.gst_number = "GST number is required";
-    if (!donor.termsAccepted)                                                       e.termsAccepted = "You must accept terms & conditions";
-    if (!donor.declarationAccepted)                                                 e.declarationAccepted = "You must confirm your details are correct";
-    if (!donor.dpdpConsent)                                                         e.dpdpConsent = "You must consent to data processing under DPDP Act 2023";
+    if ((isNRI || isForeign) && !donor.passport_number.trim())                      e.passport_number = "Passport number is required";
+    if (!donor.address_line1.trim())                                                 e.address_line1 = "Address is required";
+    if (!donor.city.trim())                                                          e.city = "City is required";
+    if (isIndian && !donor.state.trim())                                             e.state = "State is required";
+    if (!isIndian && !donor.country.trim())                                          e.country = "Country is required";
+    if (isIndian && !/^\d{6}$/.test(donor.pincode))                                 e.pincode = "Valid 6-digit pincode required";
+    if (!isIndian && !donor.pincode.trim())                                          e.pincode = "ZIP / Postal code is required";
+    if (donor.isCompany && !donor.company_name.trim())                              e.company_name = "Company name is required";
+    if (donor.isCompany && !donor.gst_number.trim())                                e.gst_number = "GST number is required";
+    if (!donor.termsAccepted)                                                        e.termsAccepted = "You must accept terms & conditions";
+    if (!donor.declarationAccepted)                                                  e.declarationAccepted = "You must confirm your details are correct";
+    if (!donor.dpdpConsent)                                                          e.dpdpConsent = "You must consent to data processing under DPDP Act 2023";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -136,29 +135,33 @@ export function DonateForm() {
 
   const handlePayment = async () => {
     if (!validateDetails()) return;
+    if (!finalAmount || isNaN(finalAmount) || finalAmount < 100) {
+      setError("Please enter a valid donation amount (minimum ₹100).");
+      return;
+    }
     setLoading(true); setError("");
     try {
       const donorRes = await fetch(`${API_URL}/api/donors/by-email`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name:             donor.name,
-          email:            donor.email,
-          phone:            donor.phone,
-          pan_number:       donor.pan_number.toUpperCase(),
-          date_of_birth:    donor.dob,
-          address_line1:    donor.address_line1,
-          city:             donor.city,
-          state:            isIndian ? donor.state : null,
-          country:          isIndian ? "India" : donor.country,
-          pincode:          donor.pincode,
-          donor_type:       donor.donor_type,
-          donor_category:   donor.donor_category,
-          passport_number:  donor.passport_number || null,
-          is_company:       donor.isCompany,
-          company_name:     donor.isCompany ? donor.company_name : null,
-          gst_number:       donor.isCompany ? donor.gst_number.toUpperCase() : null,
-          donation_type:    frequency,
+          name:            donor.name,
+          email:           donor.email,
+          phone:           donor.phone,
+          pan_number:      donor.pan_number.toUpperCase(),
+          date_of_birth:   donor.dob,
+          address_line1:   donor.address_line1,
+          city:            donor.city,
+          state:           isIndian ? donor.state : null,
+          country:         isIndian ? "India" : donor.country,
+          pincode:         donor.pincode,
+          donor_type:      donor.donor_type,
+          donor_category:  donor.donor_category,
+          passport_number: donor.passport_number || null,
+          is_company:      donor.isCompany,
+          company_name:    donor.isCompany ? donor.company_name : null,
+          gst_number:      donor.isCompany ? donor.gst_number.toUpperCase() : null,
+          donation_type:   frequency,
         }),
       });
       const donorData = await donorRes.json();
@@ -168,23 +171,23 @@ export function DonateForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          donor_id:         donorData.donor.id,
-          amount:           finalAmount,
-          donation_type:    frequency,
-          currency:         "INR",
-          donor_phone:      donor.phone,
-          pan_number:       donor.pan_number.toUpperCase(),
-          passport_number:  donor.passport_number || null,
-          dob:              donor.dob,
-          donor_type:       donor.donor_type,
-          donor_category:   donor.donor_category,
-          company_name:     donor.isCompany ? donor.company_name : null,
-          gst_number:       donor.isCompany ? donor.gst_number.toUpperCase() : null,
-          address_line1:    donor.address_line1,
-          city:             donor.city,
-          state:            donor.state || null,
-          country:          isIndian ? "India" : donor.country,
-          pincode:          donor.pincode,
+          donor_id:        donorData.donor.id,
+          amount:          finalAmount,
+          donation_type:   frequency,
+          currency:        "INR",
+          donor_phone:     donor.phone,
+          pan_number:      donor.pan_number.toUpperCase(),
+          passport_number: donor.passport_number || null,
+          dob:             donor.dob,
+          donor_type:      donor.donor_type,
+          donor_category:  donor.donor_category,
+          company_name:    donor.isCompany ? donor.company_name : null,
+          gst_number:      donor.isCompany ? donor.gst_number.toUpperCase() : null,
+          address_line1:   donor.address_line1,
+          city:            donor.city,
+          state:           donor.state || null,
+          country:         isIndian ? "India" : donor.country,
+          pincode:         donor.pincode,
         }),
       });
       const orderData = await orderRes.json();
@@ -201,7 +204,7 @@ export function DonateForm() {
         description: `${frequency === "monthly" ? "Monthly" : "One-time"} Donation`,
         order_id: orderData.razorpay_order_id,
         prefill: { name: donor.name, email: donor.email, contact: donor.phone },
-        theme: { color: "#2563eb" },
+        theme: { color: "#7B1F3A" },
         handler: async (response: any) => {
           setStep("processing");
           try {
@@ -232,9 +235,9 @@ export function DonateForm() {
 
   if (step === "processing") {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
         <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-xl text-center max-w-md w-full mx-4">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-6" />
+          <div className="w-16 h-16 border-4 border-[#7B1F3A] border-t-transparent rounded-full animate-spin mx-auto mb-6" />
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Verifying Payment...</h2>
           <p className="text-slate-500 mt-2 text-sm">Please wait while we confirm your transaction.</p>
         </div>
@@ -244,10 +247,10 @@ export function DonateForm() {
 
   if (step === "success") {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
         <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-2xl text-center max-w-md w-full mx-4">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8 sm:w-10 sm:h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#2E7D5E]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 sm:w-10 sm:h-10 text-[#2E7D5E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -256,12 +259,12 @@ export function DonateForm() {
             Dear <span className="font-bold text-slate-900">{donor.name}</span>,
           </p>
           <p className="text-slate-600 text-base sm:text-lg mb-8">
-            Your donation of <span className="text-blue-600 font-bold">₹{finalAmount}</span> is changing lives.
+            Your donation of <span className="font-bold text-[#7B1F3A]">₹{finalAmount}</span> is changing lives.
           </p>
           <div className="flex flex-col gap-3">
             {receiptUrl && (
               <a href={receiptUrl} target="_blank" rel="noopener noreferrer"
-                className="bg-blue-600 text-white px-6 sm:px-8 py-4 rounded-2xl font-bold text-sm hover:bg-blue-700 transition text-center">
+                className="bg-[#7B1F3A] text-white px-6 sm:px-8 py-4 rounded-2xl font-bold text-sm hover:bg-[#6b1b48] transition text-center">
                 Download 80G Tax Receipt
               </a>
             )}
@@ -277,14 +280,13 @@ export function DonateForm() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-2 sm:px-4 py-6 sm:py-12 bg-gray-50">
-      <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 w-full max-w-lg mx-auto overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 w-full max-w-lg mx-auto">
 
         {/* Header */}
-        <div className="bg-slate-900 px-6 sm:px-8 py-6 sm:py-8 text-white text-center">
+        <div className="bg-[#8B235E] px-6 sm:px-8 py-6 sm:py-8 text-white text-center rounded-t-3xl">
           <h1 className="text-xl sm:text-2xl font-bold">Support a Child</h1>
-          <p className="text-slate-400 text-xs sm:text-sm mt-1">100% of your donation goes to the cause</p>
+          <p className="text-white/70 text-xs sm:text-sm mt-1">100% of your donation goes to the cause</p>
         </div>
-
         <div className="p-4 sm:p-6 md:p-8">
 
           {/* Step Indicator */}
@@ -292,8 +294,8 @@ export function DonateForm() {
             {["amount", "details"].map((s, i) => (
               <div key={s} className="flex items-center gap-2 sm:gap-3">
                 <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center text-xs sm:text-sm font-bold transition-all ${
-                  step === s ? "bg-blue-600 text-white shadow-lg" :
-                  step === "details" && i === 0 ? "bg-green-500 text-white" : "bg-slate-100 text-slate-400"
+                 step === s ? "bg-[#8B235E] text-white shadow-lg" :
+                  step === "details" && i === 0 ? "bg-[#2E7D5E] text-white" : "bg-slate-100 text-slate-400"
                 }`}>
                   {step === "details" && i === 0 ? "✓" : i + 1}
                 </div>
@@ -312,7 +314,7 @@ export function DonateForm() {
                 {["one-time", "monthly"].map((f) => (
                   <button key={f} onClick={() => setFrequency(f as any)}
                     className={`flex-1 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold capitalize transition-all ${
-                      frequency === f ? "bg-white text-blue-600 shadow-sm" : "text-slate-500"
+                      frequency === f ? "bg-white text-[#7B1F3A] shadow-sm" : "text-slate-500"
                     }`}>
                     {f.replace("-", " ")}
                   </button>
@@ -323,14 +325,18 @@ export function DonateForm() {
                 {[500, 1000, 2000, 5000, 10000].map((amt) => (
                   <button key={amt} onClick={() => setAmount(amt)}
                     className={`py-3 sm:py-4 rounded-2xl border-2 font-bold transition-all text-xs sm:text-sm ${
-                      amount === amt ? "border-blue-600 bg-blue-50 text-blue-700" : "border-slate-100 text-slate-600 hover:border-slate-300"
+                      amount === amt
+                        ? "border-[#7B1F3A] bg-[#7B1F3A]/5 text-[#7B1F3A]"
+                        : "border-slate-100 text-slate-600 hover:border-slate-300"
                     }`}>
                     ₹{amt.toLocaleString()}
                   </button>
                 ))}
                 <button onClick={() => setAmount("custom")}
                   className={`py-3 sm:py-4 rounded-2xl border-2 font-bold transition-all text-xs sm:text-sm ${
-                    amount === "custom" ? "border-blue-600 bg-blue-50 text-blue-700" : "border-slate-100 text-slate-600 hover:border-slate-300"
+                    amount === "custom"
+                      ? "border-[#7B1F3A] bg-[#7B1F3A]/5 text-[#7B1F3A]"
+                      : "border-slate-100 text-slate-600 hover:border-slate-300"
                   }`}>
                   Custom
                 </button>
@@ -341,11 +347,11 @@ export function DonateForm() {
                   <span className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg sm:text-xl">₹</span>
                   <input type="number" value={customAmount} onChange={(e) => setCustomAmount(e.target.value)}
                     placeholder="Enter custom amount"
-                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl pl-10 sm:pl-12 pr-4 sm:pr-6 py-4 sm:py-5 outline-none focus:border-blue-600 text-slate-900 font-bold text-lg sm:text-xl transition-all" />
+                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl pl-10 sm:pl-12 pr-4 sm:pr-6 py-4 sm:py-5 outline-none focus:border-[#7B1F3A] text-slate-900 font-bold text-lg sm:text-xl transition-all" />
                 </div>
               )}
 
-              <div className="bg-blue-50 rounded-xl p-3 text-center text-xs sm:text-sm text-blue-700 font-medium">
+              <div className="bg-[#2E7D5E]/5 border border-[#2E7D5E]/20 rounded-xl p-3 text-center text-xs sm:text-sm text-[#2E7D5E] font-medium">
                 {finalAmount >= 5000 ? "🎓 Sponsor a child's education for a month!"
                   : finalAmount >= 2000 ? "🍱 Feed 10 children for a week!"
                   : finalAmount >= 1000 ? "📚 School supplies for 2 children!"
@@ -353,9 +359,8 @@ export function DonateForm() {
               </div>
 
               {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
-              <button onClick={() => { if (validateAmount()) setStep("details"); }}
-                className="w-full bg-slate-900 text-white py-4 sm:py-5 rounded-2xl font-bold text-base sm:text-lg hover:bg-black transition-all shadow-xl">
+<button onClick={() => { if (validateAmount()) setStep("details"); }}
+  className="w-full bg-[#8B235E] text-white py-4 sm:py-5 rounded-2xl font-bold text-base sm:text-lg hover:bg-[#6b1b48] transition-all shadow-xl">
                 Continue to Details
               </button>
             </div>
@@ -368,7 +373,6 @@ export function DonateForm() {
                 All fields required for 80G tax exemption certificate
               </p>
 
-              {/* Name */}
               <div>
                 <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Full Name *</label>
                 <input name="name" value={donor.name} onChange={handleChange}
@@ -376,7 +380,6 @@ export function DonateForm() {
                 <ErrorMsg msg={errors.name} />
               </div>
 
-              {/* Email */}
               <div>
                 <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Email Address *</label>
                 <input name="email" type="email" value={donor.email} onChange={handleChange}
@@ -384,7 +387,6 @@ export function DonateForm() {
                 <ErrorMsg msg={errors.email} />
               </div>
 
-              {/* Phone */}
               <div>
                 <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Phone Number *</label>
                 <input name="phone" value={donor.phone} onChange={handleChange}
@@ -394,7 +396,6 @@ export function DonateForm() {
                 <ErrorMsg msg={errors.phone} />
               </div>
 
-              {/* DOB */}
               <div>
                 <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Date of Birth *</label>
                 <input name="dob" type="date" value={donor.dob} onChange={handleChange}
@@ -402,7 +403,6 @@ export function DonateForm() {
                 <ErrorMsg msg={errors.dob} />
               </div>
 
-              {/* Donor Type + Category */}
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <div>
                   <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Donor Type *</label>
@@ -429,11 +429,10 @@ export function DonateForm() {
                 </div>
               </div>
 
-              {/* PAN — Indian and NRI only */}
               {(isIndian || isNRI) && (
                 <div>
                   <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">
-                    PAN Number * {isNRI && <span className="text-blue-500 normal-case">(Indian PAN)</span>}
+                    PAN Number * {isNRI && <span className="text-[#7B1F3A] normal-case">(Indian PAN)</span>}
                   </label>
                   <input name="pan_number" value={donor.pan_number}
                     onChange={(e) => setDonor({ ...donor, pan_number: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "") })}
@@ -443,11 +442,10 @@ export function DonateForm() {
                 </div>
               )}
 
-              {/* Passport — NRI and Foreign only */}
               {(isNRI || isForeign) && (
                 <div>
                   <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">
-                    Passport Number * {isForeign && <span className="text-purple-500 normal-case">(Required for Foreign donors)</span>}
+                    Passport Number * {isForeign && <span className="text-[#2E7D5E] normal-case">(Required for Foreign donors)</span>}
                   </label>
                   <input name="passport_number" value={donor.passport_number}
                     onChange={(e) => setDonor({ ...donor, passport_number: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "") })}
@@ -457,18 +455,16 @@ export function DonateForm() {
                 </div>
               )}
 
-              {/* Company checkbox */}
               <label className={`flex items-center gap-3 cursor-pointer p-3 rounded-2xl hover:bg-gray-50 transition ${donor.donor_type !== "individual" ? "opacity-60 pointer-events-none" : ""}`}>
                 <input type="checkbox" checked={donor.isCompany}
                   onChange={(e) => setDonor({ ...donor, isCompany: e.target.checked, company_name: "", gst_number: "" })}
-                  className="accent-blue-600 w-4 h-4 rounded"
+                  className="accent-[#7B1F3A] w-4 h-4 rounded"
                   disabled={donor.donor_type !== "individual"} />
                 <span className="text-xs sm:text-sm font-semibold text-gray-700">Donating on behalf of a Company</span>
               </label>
 
-              {/* Company fields */}
               {donor.isCompany && (
-                <div className="grid grid-cols-1 gap-3 p-3 sm:p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                <div className="grid grid-cols-1 gap-3 p-3 sm:p-4 bg-[#7B1F3A]/5 rounded-2xl border border-[#7B1F3A]/10">
                   <div>
                     <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Company Name *</label>
                     <input name="company_name" value={donor.company_name} onChange={handleChange}
@@ -486,7 +482,6 @@ export function DonateForm() {
                 </div>
               )}
 
-              {/* Address */}
               <div>
                 <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">Address *</label>
                 <input name="address_line1" value={donor.address_line1} onChange={handleChange}
@@ -494,7 +489,6 @@ export function DonateForm() {
                 <ErrorMsg msg={errors.address_line1} />
               </div>
 
-              {/* City */}
               <div>
                 <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wide">City *</label>
                 <input name="city" value={donor.city} onChange={handleChange}
@@ -502,7 +496,6 @@ export function DonateForm() {
                 <ErrorMsg msg={errors.city} />
               </div>
 
-              {/* State/Country + Pincode */}
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <div>
                   {isIndian ? (
@@ -536,36 +529,33 @@ export function DonateForm() {
                 </div>
               </div>
 
-              {/* FCRA Notice */}
               {isForeign && (
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800 font-medium">
                   ⚠️ <strong>FCRA Notice:</strong> Foreign contributions are accepted under the Foreign Contribution (Regulation) Act, 2010.
                 </div>
               )}
 
-              {/* Donation Summary */}
-              <div className="bg-blue-50 rounded-xl p-3 sm:p-4 flex justify-between items-center">
+<div className="bg-[#8B235E]/5 border border-[#8B235E]/10 rounded-xl p-3 sm:p-4 flex justify-between items-center">
                 <div>
                   <p className="text-xs sm:text-sm text-gray-500">Donating</p>
-                  <p className="text-lg sm:text-xl font-bold text-blue-600">₹{finalAmount}</p>
+                  <p className="text-lg sm:text-xl font-bold text-[#7B1F3A]">₹{finalAmount}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs sm:text-sm text-gray-500">Type</p>
                   <p className="font-bold text-gray-700 capitalize text-sm">{frequency}</p>
                 </div>
-                <button onClick={() => setStep("amount")} className="text-xs sm:text-sm text-blue-600 font-bold hover:underline">
+                <button onClick={() => setStep("amount")} className="text-xs sm:text-sm text-[#7B1F3A] font-bold hover:underline">
                   Change
                 </button>
               </div>
 
-              {/* Checkboxes */}
               <div className="space-y-2 pt-1">
                 <label className="flex items-start gap-3 cursor-pointer p-3 rounded-2xl hover:bg-gray-50 transition">
                   <input type="checkbox" checked={donor.termsAccepted}
                     onChange={(e) => setDonor({ ...donor, termsAccepted: e.target.checked })}
-                    className="accent-blue-600 w-4 h-4 mt-0.5 flex-shrink-0" />
+                    className="accent-[#7B1F3A] w-4 h-4 mt-0.5 flex-shrink-0" />
                   <span className="text-xs text-gray-600 leading-relaxed">
-                    I agree to the <a href="/terms" target="_blank" className="text-blue-600 underline font-semibold">Terms & Conditions</a>, <a href="/privacy" target="_blank" className="text-blue-600 underline font-semibold">Privacy Policy</a> and <a href="/refund-policy" target="_blank" className="text-blue-600 underline font-semibold">Refund Policy</a>
+                    I agree to the <a href="/terms" target="_blank" className="text-[#7B1F3A] underline font-semibold">Terms & Conditions</a>, <a href="/privacy" target="_blank" className="text-[#7B1F3A] underline font-semibold">Privacy Policy</a> and <a href="/refund-policy" target="_blank" className="text-[#7B1F3A] underline font-semibold">Refund Policy</a>
                   </span>
                 </label>
                 <ErrorMsg msg={errors.termsAccepted} />
@@ -573,17 +563,17 @@ export function DonateForm() {
                 <label className="flex items-start gap-3 cursor-pointer p-3 rounded-2xl hover:bg-gray-50 transition">
                   <input type="checkbox" checked={donor.declarationAccepted}
                     onChange={(e) => setDonor({ ...donor, declarationAccepted: e.target.checked })}
-                    className="accent-blue-600 w-4 h-4 mt-0.5 flex-shrink-0" />
+                    className="accent-[#7B1F3A] w-4 h-4 mt-0.5 flex-shrink-0" />
                   <span className="text-xs text-gray-600 leading-relaxed">
                     I declare that the above information is correct and true to the best of my knowledge
                   </span>
                 </label>
                 <ErrorMsg msg={errors.declarationAccepted} />
 
-                <label className="flex items-start gap-3 cursor-pointer p-3 rounded-2xl border border-blue-100 bg-blue-50/50 transition">
+                <label className="flex items-start gap-3 cursor-pointer p-3 rounded-2xl border border-[#7B1F3A]/10 bg-[#7B1F3A]/5 transition">
                   <input type="checkbox" checked={donor.dpdpConsent}
                     onChange={(e) => setDonor({ ...donor, dpdpConsent: e.target.checked })}
-                    className="accent-blue-600 w-4 h-4 mt-0.5 flex-shrink-0" />
+                    className="accent-[#7B1F3A] w-4 h-4 mt-0.5 flex-shrink-0" />
                   <span className="text-xs text-gray-600 leading-relaxed">
                     I consent to collection and processing of my personal data for donation and tax receipt purposes under the <strong>Digital Personal Data Protection Act, 2023</strong>
                   </span>
@@ -595,8 +585,7 @@ export function DonateForm() {
 
               <div className="pt-2 border-t border-slate-100">
                 <button onClick={handlePayment} disabled={loading}
-                  className="w-full bg-blue-600 text-white py-4 sm:py-5 rounded-2xl font-bold text-base sm:text-lg hover:bg-blue-700 transition shadow-lg flex items-center justify-center gap-3 disabled:opacity-60">
-                  {loading
+className="w-full bg-[#8B235E] text-white py-4 sm:py-5 rounded-2xl font-bold text-base sm:text-lg hover:bg-[#6b1b48] transition shadow-lg flex items-center justify-center gap-3 disabled:opacity-60">                  {loading
                     ? <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     : `🔒 Complete ₹${finalAmount} Donation`}
                 </button>

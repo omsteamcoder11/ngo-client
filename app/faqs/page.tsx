@@ -1,14 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Metadata } from "next";
-import { Plus } from "lucide-react"; // Note: ensure lucide-react is installed or use the SVG provided below
 
 export default function FAQPage() {
   return (
     <main className="bg-white min-h-screen overflow-x-hidden">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 via-white to-blue-50/30 py-16 md:py-24 border-b border-gray-100">
+      <section className="bg-gradient-to-br from-[#fdf2f8] via-white to-[#f0f9f6] py-16 md:py-24 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
             Frequently Asked Questions
@@ -17,11 +15,11 @@ export default function FAQPage() {
             Find answers to common questions about our mission and how you can help.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 text-gray-600">
-            <p className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-blue-100 shadow-sm text-sm sm:text-base">
-              <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+            <p className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-rose-100 shadow-sm text-sm sm:text-base">
+              <span className="w-2 h-2 bg-[#8b265a] rounded-full animate-pulse"></span>
               Live Support: Mon-Fri, 8am-5pm CT
             </p>
-            <a href="mailto:care@childsave.org" className="text-blue-600 font-semibold hover:underline flex items-center gap-1">
+            <a href="mailto:care@childsave.org" className="text-[#8b265a] font-semibold hover:underline flex items-center gap-1">
               care@childsave.org
             </a>
           </div>
@@ -34,7 +32,7 @@ export default function FAQPage() {
         {/* About us Section */}
         <div className="mb-16">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-            <span className="w-8 h-1 bg-blue-600 rounded-full"></span>
+            <span className="w-8 h-1 bg-[#8b265a] rounded-full"></span>
             About us (in general)
           </h2>
           <div className="space-y-4">
@@ -56,7 +54,7 @@ export default function FAQPage() {
         {/* About giving Section */}
         <div className="mb-16">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-            <span className="w-8 h-1 bg-blue-600 rounded-full"></span>
+            <span className="w-8 h-1 bg-[#1e6b52] rounded-full"></span>
             About giving
           </h2>
           <div className="space-y-4">
@@ -74,7 +72,7 @@ export default function FAQPage() {
         {/* About Sponsorship Section */}
         <div className="mb-16">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-            <span className="w-8 h-1 bg-blue-600 rounded-full"></span>
+            <span className="w-8 h-1 bg-[#8b265a] rounded-full"></span>
             Child Sponsorship
           </h2>
           <div className="space-y-4">
@@ -104,7 +102,7 @@ export default function FAQPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a
               href="/contact"
-              className="w-full sm:w-auto bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 active:scale-95"
+              className="w-full sm:w-auto bg-[#8b265a] text-white px-8 py-4 rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-rose-200 active:scale-95"
             >
               Contact Us
             </a>
@@ -121,25 +119,23 @@ export default function FAQPage() {
   );
 }
 
-// Reusable FAQ Item Component with Accordion Logic
 function FaqItem({ question, answer }: { question: string; answer: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div 
       className={`group border rounded-2xl transition-all duration-300 ${
-        isOpen ? "border-blue-500 bg-blue-50/30 shadow-md shadow-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
+        isOpen ? "border-[#8b265a] bg-[#fdf2f8]/40 shadow-md" : "border-gray-200 bg-white hover:border-gray-300"
       }`}
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full text-left p-5 sm:p-6 flex justify-between items-center gap-4 focus:outline-none"
       >
-        <h3 className={`text-base sm:text-lg font-bold transition-colors ${isOpen ? "text-blue-700" : "text-gray-900"}`}>
+        <h3 className={`text-base sm:text-lg font-bold transition-colors ${isOpen ? "text-[#8b265a]" : "text-gray-900"}`}>
           {question}
         </h3>
-        <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? "bg-blue-600 text-white rotate-45" : "bg-gray-100 text-gray-500"}`}>
-          {/* Custom Plus SVG */}
+        <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? "bg-[#8b265a] text-white rotate-45" : "bg-gray-100 text-gray-500"}`}>
           <svg 
             width="20" 
             height="20" 
@@ -161,13 +157,10 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
           isOpen ? "max-h-[500px] opacity-100 pb-6" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="px-5 sm:px-6 text-gray-600 text-sm sm:text-base leading-relaxed border-t border-blue-100/50 pt-4">
+        <div className="px-5 sm:px-6 text-gray-600 text-sm sm:text-base leading-relaxed border-t border-rose-100/50 pt-4">
           {answer}
         </div>
       </div>
     </div>
   );
 }
-
-
-

@@ -7,133 +7,410 @@ export const metadata: Metadata = {
     "See how your support helps young people in India gain sustainable employment, break the cycle of poverty, and transform their communities.",
 };
 
-export default function ImpactPage() {
+// ── Design tokens (matches logo + Employment page) ──────────
+const T = {
+  maroon:  "#7B1F5E",
+  green:   "#1A7A4A",
+  cream:   "#FAF7F2",
+  cream2:  "#F3EDE4",
+  white:   "#FFFFFF",
+  text:    "#1C1C1C",
+  muted:   "#6B6560",
+  divider: "#DDD6CE",
+} as const;
+
+const BASE: React.CSSProperties = {
+  fontFamily: "'Georgia', 'Times New Roman', serif",
+  color: T.text,
+};
+
+const LABEL: React.CSSProperties = {
+  fontFamily: "'Arial', sans-serif",
+  fontSize: "clamp(0.68rem, 1vw, 0.78rem)",
+  fontWeight: 700,
+  letterSpacing: "0.2em",
+  textTransform: "uppercase" as const,
+};
+
+const SECTION: React.CSSProperties = {
+  padding: "clamp(2.5rem, 5vw, 4.5rem) clamp(1.2rem, 5vw, 5rem)",
+};
+
+// ── Components ───────────────────────────────────────────────
+function SectionLabel({ children, color = T.maroon }: { children: React.ReactNode; color?: string }) {
   return (
-    <main className="bg-white">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 to-white py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="text-sm font-semibold text-blue-600 uppercase tracking-wider">
-            Transform future generations
-          </span>
-          <h1 className="mt-4 text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
-            Independence. Financial stability. It starts here.
+    <p style={{ ...LABEL, color, margin: "0 0 0.8rem" }}>
+      {children}
+    </p>
+  );
+}
+
+function StatCard({ number, label, description }: { number: string; label: string; description: string }) {
+  return (
+    <div
+      style={{
+        background: T.white,
+        borderTop: `3px solid ${T.maroon}`,
+        padding: "clamp(1.6rem, 3vw, 2.4rem) clamp(1.2rem, 2.5vw, 2rem)",
+        textAlign: "center",
+      }}
+    >
+      <div
+        style={{
+          fontSize: "clamp(2.4rem, 5vw, 3.6rem)",
+          fontWeight: 800,
+          color: T.maroon,
+          lineHeight: 1,
+          letterSpacing: "-0.02em",
+          fontFamily: "'Arial', sans-serif",
+        }}
+      >
+        {number}
+      </div>
+      <p
+        style={{
+          fontFamily: "'Arial', sans-serif",
+          fontWeight: 700,
+          fontSize: "clamp(0.82rem, 1.2vw, 0.92rem)",
+          color: T.text,
+          margin: "0.6rem 0 0.3rem",
+          textTransform: "uppercase",
+          letterSpacing: "0.06em",
+        }}
+      >
+        {label}
+      </p>
+      <p
+        style={{
+          fontFamily: "'Arial', sans-serif",
+          fontSize: "clamp(0.76rem, 1.1vw, 0.84rem)",
+          color: T.muted,
+          margin: 0,
+        }}
+      >
+        {description}
+      </p>
+    </div>
+  );
+}
+
+// ── Page ─────────────────────────────────────────────────────
+export default function ImpactPage() {
+  const industries = [
+    "IT & Software", "Retail Sales", "Hospitality", "Call Centers",
+    "Accounting", "Construction", "Electronics", "Beauty & Wellness",
+    "Electrical", "Welding", "Entrepreneurship",
+  ];
+
+  return (
+    <main style={{ ...BASE, background: T.cream, overflowX: "hidden" }}>
+
+      {/* ── HERO ─────────────────────────────────────────── */}
+      <section style={{ background: T.maroon, ...SECTION }}>
+        <div style={{ maxWidth: "860px" }}>
+          <p style={{ ...LABEL, color: "rgba(255,255,255,0.55)", margin: "0 0 1rem" }}>
+            Transform Future Generations
+          </p>
+          <h1
+            style={{
+              fontSize: "clamp(1.8rem, 4.5vw, 3.4rem)",
+              fontWeight: 800,
+              color: T.white,
+              lineHeight: 1.15,
+              letterSpacing: "-0.01em",
+              margin: "0 0 1.2rem",
+            }}
+          >
+            Independence. Financial stability.
+            <br />
+            It starts here.
           </h1>
-          <p className="mt-6 text-xl text-gray-600 max-w-3xl mx-auto">
+          <p
+            style={{
+              fontFamily: "'Arial', sans-serif",
+              fontSize: "clamp(0.88rem, 1.5vw, 1rem)",
+              color: "rgba(255,255,255,0.76)",
+              lineHeight: 1.78,
+              maxWidth: "600px",
+              margin: 0,
+            }}
+          >
             Into Employment® extends the ripple started through our foundational
             programs by helping young people find sustainable, long-term and
-            successful careers. And it’s working. Our youth graduate with the
-            financial ability to support their families and change their
-            communities.
+            successful careers. Our youth graduate with the financial ability
+            to support their families and change their communities.
           </p>
         </div>
       </section>
 
-      {/* Fall Report Callout */}
-      <section className="py-8 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gray-50 rounded-2xl p-6 shadow-sm border border-gray-200 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">
-                Into Employment Impact Report
-              </h2>
-              <p className="text-gray-600 mt-1">
-                Discover how your generosity is igniting hope and opportunity
-                for young people across India.
-              </p>
-            </div>
-            <a
-              href="#"
-              className="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
-            >
-              <span>Read the Report (PDF)</span>
-              <span>📄</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Your support impacts thousands of lives
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <StatCard
-              number="8,200+"
-              label="youth trained"
-              description="across India since 2014"
-            />
-            <StatCard
-              number="74%"
-              label="find jobs within 6 months"
-              description="of program completion"
-            />
-            <StatCard
-              number="2.5x"
-              label="average income increase"
-              description="for participating families"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Opportunity and Economic Equity */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Opportunity transforms futures
-              </h2>
-              <p className="text-gray-700 leading-relaxed">
-                While unemployment and underemployment remain core causes of
-                poverty, stable work unlocks opportunities, promotes sustained
-                and inclusive economic growth, and can double or triple a
-                family's income.
-              </p>
-              <p className="text-gray-700 leading-relaxed mt-4">
-                Your donations to Into Employment ensure more access to critical
-                resources and support as young people transition from childhood
-                to adulthood. Opportunity can begin a new family legacy.
-              </p>
-            </div>
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Investing in economic equity
-              </h2>
-              <p className="text-gray-700 leading-relaxed">
-                With a gift to Into Employment, you’re investing in young
-                people‘s — especially women‘s — futures.
-              </p>
-              <p className="text-gray-700 leading-relaxed mt-4">
-                Young women have historically been pulled from education to
-                tend to their families. Globally, young men are almost 1.5
-                times more likely to be employed than young women. Because{" "}
-                <strong>68% of our participants are women</strong>, your
-                investment is supporting a fairer future.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonial */}
-      <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-blue-50 rounded-2xl p-8 md:p-10 text-center">
-            <div className="text-4xl text-blue-400 mb-4">“</div>
-            <blockquote className="text-xl md:text-2xl text-gray-800 italic leading-relaxed">
-              Thank you to everyone who came together to help children like
-              Kavya make their dreams come true.
-            </blockquote>
-            <p className="mt-4 font-semibold text-gray-900">
-              — Sunita, Kavya’s mother
+      {/* ── REPORT CALLOUT ───────────────────────────────── */}
+      <section
+        style={{
+          background: T.cream2,
+          borderLeft: `5px solid ${T.green}`,
+          padding: "clamp(1.4rem, 3vw, 2rem) clamp(1.2rem, 5vw, 5rem)",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "900px",
+            margin: "0 auto",
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "1rem",
+          }}
+        >
+          <div>
+            <p style={{ ...LABEL, color: T.green, margin: "0 0 0.4rem" }}>
+              Latest Publication
             </p>
-            <p className="text-gray-600 text-sm mt-1">
+            <h2
+              style={{
+                fontSize: "clamp(1rem, 2vw, 1.3rem)",
+                fontWeight: 700,
+                color: T.text,
+                margin: "0 0 0.3rem",
+                fontFamily: "'Arial', sans-serif",
+              }}
+            >
+              Into Employment Impact Report
+            </h2>
+            <p
+              style={{
+                fontFamily: "'Arial', sans-serif",
+                fontSize: "clamp(0.78rem, 1.2vw, 0.88rem)",
+                color: T.muted,
+                margin: 0,
+              }}
+            >
+              Discover how your generosity is igniting hope and opportunity
+              for young people across India.
+            </p>
+          </div>
+          
+          <a  href="#"
+            style={{
+              background: T.maroon,
+              color: T.white,
+              padding: "0.7rem 1.6rem",
+              fontFamily: "'Arial', sans-serif",
+              fontWeight: 700,
+              fontSize: "clamp(0.76rem, 1.1vw, 0.84rem)",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              whiteSpace: "nowrap" as const,
+              flexShrink: 0,
+            }}
+          >
+            Read the Report <span>↗</span>
+          </a>
+        </div>
+      </section>
+
+      {/* ── STATS ────────────────────────────────────────── */}
+      <section style={{ background: T.cream, ...SECTION }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <SectionLabel>Your Support in Numbers</SectionLabel>
+          <h2
+            style={{
+              fontSize: "clamp(1.2rem, 2.5vw, 1.8rem)",
+              fontWeight: 700,
+              color: T.text,
+              margin: "0 0 2rem",
+              maxWidth: "520px",
+              lineHeight: 1.3,
+            }}
+          >
+            Your support impacts thousands of lives
+          </h2>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: "1px",
+              background: T.divider,
+              border: `1px solid ${T.divider}`,
+            }}
+          >
+            <StatCard number="8,200+" label="Youth Trained" description="across India since 2014" />
+            <StatCard number="74%" label="Find Jobs Within 6 Months" description="of program completion" />
+            <StatCard number="2.5×" label="Average Income Increase" description="for participating families" />
+          </div>
+        </div>
+      </section>
+
+      {/* ── OPPORTUNITY + EQUITY ─────────────────────────── */}
+      <section style={{ background: T.cream2, ...SECTION }}>
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "1px",
+            background: T.divider,
+            border: `1px solid ${T.divider}`,
+          }}
+        >
+          {/* Left */}
+          <div style={{ background: T.white, padding: "clamp(1.8rem, 3.5vw, 3rem)", borderTop: `3px solid ${T.green}` }}>
+            <SectionLabel color={T.green}>Opportunity</SectionLabel>
+            <h2
+              style={{
+                fontSize: "clamp(1rem, 1.8vw, 1.2rem)",
+                fontWeight: 700,
+                color: T.text,
+                margin: "0 0 1rem",
+                fontFamily: "'Arial', sans-serif",
+                textTransform: "uppercase",
+                letterSpacing: "0.04em",
+              }}
+            >
+              Opportunity transforms futures
+            </h2>
+            <p
+              style={{
+                fontFamily: "'Arial', sans-serif",
+                fontSize: "clamp(0.82rem, 1.2vw, 0.92rem)",
+                color: T.muted,
+                lineHeight: 1.78,
+                margin: "0 0 1rem",
+              }}
+            >
+              While unemployment and underemployment remain core causes of
+              poverty, stable work unlocks opportunities, promotes sustained
+              and inclusive economic growth, and can double or triple a
+              family's income.
+            </p>
+            <p
+              style={{
+                fontFamily: "'Arial', sans-serif",
+                fontSize: "clamp(0.82rem, 1.2vw, 0.92rem)",
+                color: T.muted,
+                lineHeight: 1.78,
+                margin: 0,
+              }}
+            >
+              Your donations to Into Employment ensure more access to critical
+              resources and support as young people transition from childhood
+              to adulthood. Opportunity can begin a new family legacy.
+            </p>
+          </div>
+
+          {/* Right */}
+          <div style={{ background: T.white, padding: "clamp(1.8rem, 3.5vw, 3rem)", borderTop: `3px solid ${T.maroon}` }}>
+            <SectionLabel>Economic Equity</SectionLabel>
+            <h2
+              style={{
+                fontSize: "clamp(1rem, 1.8vw, 1.2rem)",
+                fontWeight: 700,
+                color: T.text,
+                margin: "0 0 1rem",
+                fontFamily: "'Arial', sans-serif",
+                textTransform: "uppercase",
+                letterSpacing: "0.04em",
+              }}
+            >
+              Investing in economic equity
+            </h2>
+            <p
+              style={{
+                fontFamily: "'Arial', sans-serif",
+                fontSize: "clamp(0.82rem, 1.2vw, 0.92rem)",
+                color: T.muted,
+                lineHeight: 1.78,
+                margin: "0 0 1rem",
+              }}
+            >
+              With a gift to Into Employment, you're investing in young
+              people's — especially women's — futures.
+            </p>
+            <p
+              style={{
+                fontFamily: "'Arial', sans-serif",
+                fontSize: "clamp(0.82rem, 1.2vw, 0.92rem)",
+                color: T.muted,
+                lineHeight: 1.78,
+                margin: "0 0 1rem",
+              }}
+            >
+              Young women have historically been pulled from education to
+              tend to their families. Globally, young men are almost 1.5
+              times more likely to be employed than young women.
+            </p>
+            <div
+              style={{
+                background: T.cream2,
+                borderLeft: `4px solid ${T.maroon}`,
+                padding: "0.9rem 1.2rem",
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: "'Arial', sans-serif",
+                  fontSize: "clamp(0.84rem, 1.2vw, 0.94rem)",
+                  color: T.maroon,
+                  fontWeight: 700,
+                  margin: 0,
+                  lineHeight: 1.5,
+                }}
+              >
+                68% of our participants are women — your investment is
+                supporting a fairer future.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIAL ──────────────────────────────────── */}
+      <section style={{ background: T.cream, ...SECTION }}>
+        <div style={{ maxWidth: "780px", margin: "0 auto" }}>
+          <div
+            style={{
+              borderLeft: `5px solid ${T.green}`,
+              paddingLeft: "clamp(1.2rem, 3vw, 2.5rem)",
+            }}
+          >
+            <p
+              style={{
+                fontSize: "clamp(1rem, 2.2vw, 1.35rem)",
+                color: T.text,
+                fontStyle: "italic",
+                lineHeight: 1.75,
+                margin: "0 0 1.2rem",
+              }}
+            >
+              "Thank you to everyone who came together to help children like
+              Kavya make their dreams come true."
+            </p>
+            <p
+              style={{
+                fontFamily: "'Arial', sans-serif",
+                fontWeight: 700,
+                fontSize: "clamp(0.8rem, 1.1vw, 0.88rem)",
+                color: T.text,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                margin: "0 0 0.2rem",
+              }}
+            >
+              — Sunita, Kavya's mother
+            </p>
+            <p
+              style={{
+                fontFamily: "'Arial', sans-serif",
+                fontSize: "clamp(0.76rem, 1.1vw, 0.84rem)",
+                color: T.muted,
+                margin: 0,
+              }}
+            >
               Kavya, 21, is now in her final year of college, studying to
               become a software developer.
             </p>
@@ -141,71 +418,162 @@ export default function ImpactPage() {
         </div>
       </section>
 
-      {/* Graduate Story */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                “I believe in ChildSave youth. Everyone should have the same
-                opportunities to progress.”
-              </h2>
-              <p className="text-gray-700 leading-relaxed">
-                — Arjun Mehta, program graduate, business owner, employer partner
-              </p>
-              <p className="text-gray-700 leading-relaxed mt-4">
-                Arjun Mehta, 29, owns a digital marketing agency in Pune and is
-                a ChildSave graduate. He maintains ties to ChildSave by
-                partnering with us to provide internships and employment to
-                Into Employment participants.
-              </p>
-              <p className="text-gray-700 leading-relaxed mt-4">
-                Arjun‘s story is a testament to the ripple effect: A child in
-                poverty is supported through our programs. Not only does he
-                achieve financial stability, but he also invests in other young
-                adults who see him as a role model for rising out of poverty.
-              </p>
-            </div>
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-              <div className="text-4xl mb-3 text-center">☕</div>
-              <p className="text-gray-600 text-center">
-                Arjun’s story mirrors that of many young people we support.
-                With the right skills and opportunities, they become
-                contributors to their communities and mentors for the next
-                generation.
-              </p>
-            </div>
+      {/* ── GRADUATE STORY ───────────────────────────────── */}
+      <section style={{ background: T.cream2, ...SECTION }}>
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "1px",
+            background: T.divider,
+            border: `1px solid ${T.divider}`,
+          }}
+        >
+          {/* Story text */}
+          <div style={{ background: T.white, padding: "clamp(1.8rem, 3.5vw, 3rem)", borderTop: `3px solid ${T.maroon}` }}>
+            <SectionLabel>Graduate Story</SectionLabel>
+            <h2
+              style={{
+                fontSize: "clamp(1rem, 1.9vw, 1.25rem)",
+                fontWeight: 700,
+                color: T.text,
+                lineHeight: 1.45,
+                margin: "0 0 0.9rem",
+                fontStyle: "italic",
+              }}
+            >
+              "I believe in ChildSave youth. Everyone should have the same
+              opportunities to progress."
+            </h2>
+            <p
+              style={{
+                fontFamily: "'Arial', sans-serif",
+                fontSize: "clamp(0.78rem, 1.1vw, 0.86rem)",
+                color: T.maroon,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                margin: "0 0 1.2rem",
+              }}
+            >
+              — Arjun Mehta, program graduate, business owner, employer partner
+            </p>
+            <p
+              style={{
+                fontFamily: "'Arial', sans-serif",
+                fontSize: "clamp(0.82rem, 1.2vw, 0.92rem)",
+                color: T.muted,
+                lineHeight: 1.78,
+                margin: "0 0 0.9rem",
+              }}
+            >
+              Arjun Mehta, 29, owns a digital marketing agency in Pune and is
+              a ChildSave graduate. He maintains ties to ChildSave by
+              partnering with us to provide internships and employment to
+              Into Employment participants.
+            </p>
+            <p
+              style={{
+                fontFamily: "'Arial', sans-serif",
+                fontSize: "clamp(0.82rem, 1.2vw, 0.92rem)",
+                color: T.muted,
+                lineHeight: 1.78,
+                margin: 0,
+              }}
+            >
+              Arjun's story is a testament to the ripple effect: A child in
+              poverty is supported through our programs. Not only does he
+              achieve financial stability, but he also invests in other young
+              adults who see him as a role model for rising out of poverty.
+            </p>
+          </div>
+
+          {/* Pull stat */}
+          <div
+            style={{
+              background: T.maroon,
+              padding: "clamp(1.8rem, 3.5vw, 3rem)",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              gap: "1.4rem",
+            }}
+          >
+            <p style={{ ...LABEL, color: "rgba(255,255,255,0.5)", margin: 0 }}>
+              The Ripple Effect
+            </p>
+            <p
+              style={{
+                fontSize: "clamp(0.95rem, 1.8vw, 1.15rem)",
+                color: "rgba(255,255,255,0.88)",
+                lineHeight: 1.75,
+                fontStyle: "italic",
+                margin: 0,
+              }}
+            >
+              With the right skills and opportunities, our graduates become
+              contributors to their communities and mentors for the next
+              generation.
+            </p>
+            <div
+              style={{
+                width: "48px",
+                height: "3px",
+                background: T.green,
+              }}
+            />
           </div>
         </div>
       </section>
 
-      {/* Industries */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+      {/* ── INDUSTRIES ───────────────────────────────────── */}
+      <section style={{ background: T.cream, ...SECTION }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <SectionLabel color={T.green}>Career Placement</SectionLabel>
+          <h2
+            style={{
+              fontSize: "clamp(1.2rem, 2.5vw, 1.8rem)",
+              fontWeight: 700,
+              color: T.text,
+              margin: "0 0 0.6rem",
+              lineHeight: 1.3,
+            }}
+          >
             Impact across industry verticals
           </h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p
+            style={{
+              fontFamily: "'Arial', sans-serif",
+              fontSize: "clamp(0.82rem, 1.3vw, 0.94rem)",
+              color: T.muted,
+              lineHeight: 1.7,
+              margin: "0 0 1.8rem",
+              maxWidth: "540px",
+            }}
+          >
             Your support upskills young people for career placements across a
             wide swath of industries in India.
           </p>
-          <div className="flex flex-wrap justify-center gap-3">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
             {[
-              "IT & Software",
-              "Retail Sales",
-              "Hospitality",
-              "Call Centers",
-              "Accounting",
-              "Construction",
-              "Electronics",
-              "Beauty & Wellness",
-              "Electrical",
-              "Welding",
-              "Entrepreneurship",
-            ].map((industry) => (
+              "IT & Software", "Retail Sales", "Hospitality", "Call Centers",
+              "Accounting", "Construction", "Electronics", "Beauty & Wellness",
+              "Electrical", "Welding", "Entrepreneurship",
+            ].map((industry, i) => (
               <span
                 key={industry}
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm"
+                style={{
+                  background: i % 3 === 0 ? T.maroon : T.white,
+                  color: i % 3 === 0 ? T.white : T.text,
+                  border: `1px solid ${i % 3 === 0 ? T.maroon : T.divider}`,
+                  padding: "0.42rem 1rem",
+                  fontFamily: "'Arial', sans-serif",
+                  fontWeight: i % 3 === 0 ? 700 : 400,
+                  fontSize: "clamp(0.74rem, 1.1vw, 0.84rem)",
+                  letterSpacing: "0.03em",
+                }}
               >
                 {industry}
               </span>
@@ -214,54 +582,81 @@ export default function ImpactPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <div className="bg-blue-50 py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-2xl font-semibold text-gray-900 mb-4">
-            Be a part of the solution
+      {/* ── CTA ──────────────────────────────────────────── */}
+      <section
+        style={{
+          background: T.white,
+          borderTop: `4px solid ${T.green}`,
+          ...SECTION,
+        }}
+      >
+        <div style={{ maxWidth: "640px" }}>
+          <SectionLabel color={T.green}>Be a Part of the Solution</SectionLabel>
+          <h3
+            style={{
+              fontSize: "clamp(1.5rem, 3.5vw, 2.4rem)",
+              fontWeight: 800,
+              color: T.text,
+              lineHeight: 1.2,
+              letterSpacing: "-0.01em",
+              margin: "0 0 0.9rem",
+            }}
+          >
+            Help build a brighter future.
           </h3>
-          <p className="text-gray-700 mb-6">
+          <p
+            style={{
+              fontFamily: "'Arial', sans-serif",
+              fontSize: "clamp(0.86rem, 1.4vw, 0.98rem)",
+              color: T.muted,
+              lineHeight: 1.78,
+              margin: "0 0 2rem",
+              maxWidth: "500px",
+            }}
+          >
             Your gift to Into Employment helps young people gain the skills,
             confidence, and connections they need to build a brighter future.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/donate?program=into-employment"
-              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition"
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+            
+            <a  href="/donate?program=into-employment"
+              style={{
+                background: T.maroon,
+                color: T.white,
+                padding: "0.85rem 2.2rem",
+                fontFamily: "'Arial', sans-serif",
+                fontWeight: 700,
+                fontSize: "clamp(0.78rem, 1.1vw, 0.88rem)",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                display: "inline-block",
+              }}
             >
               Donate to Into Employment
             </a>
-            <a
-              href="/contact"
-              className="inline-block border border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-50 transition"
+            
+            <a  href="/contact"
+              style={{
+                background: "transparent",
+                color: T.green,
+                padding: "0.85rem 2.2rem",
+                fontFamily: "'Arial', sans-serif",
+                fontWeight: 700,
+                fontSize: "clamp(0.78rem, 1.1vw, 0.88rem)",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                display: "inline-block",
+                border: `1.5px solid ${T.green}`,
+              }}
             >
               Partner With Us
             </a>
           </div>
         </div>
-      </div>
+      </section>
+
     </main>
   );
 }
-
-// Reusable Stat Card
-function StatCard({
-  number,
-  label,
-  description,
-}: {
-  number: string;
-  label: string;
-  description: string;
-}) {
-  return (
-    <div className="bg-gray-50 rounded-xl p-6 text-center border border-gray-100">
-      <div className="text-4xl font-bold text-blue-600">{number}</div>
-      <p className="text-gray-800 font-semibold mt-2">{label}</p>
-      <p className="text-gray-500 text-sm mt-1">{description}</p>
-    </div>
-  );
-}
-
-
-

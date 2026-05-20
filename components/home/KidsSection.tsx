@@ -94,10 +94,10 @@ export default function AboutMission() {
             </ul>
 
             {/* CTA */}
-       <button className="inline-flex items-center gap-3 py-3 sm:py-4 px-6 sm:px-8 bg-[#009270] text-white rounded-full font-bold uppercase tracking-wide text-xs sm:text-sm shadow-lg hover:bg-[#007a5d] transition-all mt-10">
+      <a href="/donate" className="inline-flex items-center gap-3 py-3 sm:py-4 px-6 sm:px-8 bg-[#009270] text-white rounded-full font-bold uppercase tracking-wide text-xs sm:text-sm shadow-lg hover:bg-[#007a5d] transition-all mt-10">
   Donate Now
   <ArrowRight size={16} />
-</button>
+</a>
 
           </motion.div>
         </div>

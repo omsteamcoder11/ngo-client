@@ -261,7 +261,7 @@ export default function ChildDetailsPage() {
         name: "ChildSave NGO",
         description: `${form.donationType === "monthly" ? "Monthly" : "One-Time"} Sponsorship for ${child.name}`,
         notes: { child_id: child.id, child_name: child.name },
-        theme: { color: "#2563eb" },
+      theme: { color: "#8B235E" },
         prefill: { name: form.fullName, email: form.email, contact: form.phone },
         handler: async (response: any) => {
           try {
@@ -310,7 +310,7 @@ export default function ChildDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 overflow-x-hidden">
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
 
       {/* Hero */}
       <div className="pt-16 sm:pt-20 pb-6 sm:pb-8 px-4 sm:px-6">
@@ -365,14 +365,14 @@ export default function ChildDetailsPage() {
                     <span className="text-sm font-black text-blue-600">{child.funded}%</span>
                   </div>
                   <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-700" style={{ width: `${child.funded}%` }}/>
+                    <div className="h-full bg-gradient-to-r bg-[#009270]rounded-full transition-all duration-700" style={{ width: `${child.funded}%` }}/>
                   </div>
                 </div>
                 <div className="flex items-center justify-between mb-4 p-3 bg-blue-50 rounded-2xl">
                   <span className="text-xs sm:text-sm text-gray-600 font-medium">Monthly sponsorship</span>
                   <span className="text-lg sm:text-xl font-black text-blue-700">₹{child.price}</span>
                 </div>
-                <button onClick={handleOpenModal} className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-[0.98] text-white py-3 sm:py-3.5 rounded-2xl font-black text-sm transition-all duration-200 shadow-lg shadow-blue-200 flex items-center justify-center gap-2">
+                <button onClick={handleOpenModal} className="w-full bg-gradient-to-r bg-[#8B235E] hover:bg-[#6b1b48] active:scale-[0.98] text-white py-3 sm:py-3.5 rounded-2xl font-black text-sm transition-all duration-200 shadow-lg shadow-blue-200 flex items-center justify-center gap-2">
                   <Heart size={15} className="fill-current"/> Sponsor {child.name}
                 </button>
                 <Link href="/sponsor-a-child" className="flex items-center justify-center text-blue-500 hover:text-blue-700 font-semibold text-xs mt-4 group transition">
@@ -399,7 +399,7 @@ export default function ChildDetailsPage() {
                     <div className="text-xl sm:text-2xl mb-1.5 sm:mb-2">{item.icon}</div>
                     <p className="font-black text-gray-800 text-xs sm:text-sm leading-tight">{item.title}</p>
                     <p className="text-xs text-gray-400 mt-0.5 mb-1.5 sm:mb-2">{item.desc}</p>
-                    <p className="font-black text-blue-600 text-base sm:text-lg">₹{item.price}</p>
+                    <p className="font-black text-[#8B235E] text-base sm:text-lg">₹{item.price}</p>
                   </button>
                 ))}
               </div>
@@ -409,7 +409,7 @@ export default function ChildDetailsPage() {
                 <input type="number" placeholder="Enter custom amount (₹100 – ₹10,00,000)"
                   value={customAmount} min={100} max={1000000}
                   onChange={(e) => { setCustomAmount(e.target.value); setSelected(null); setAmountError(""); }}
-                  className="w-full pl-8 pr-4 py-3 sm:py-3.5 rounded-2xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all duration-200 bg-gray-50 hover:bg-white"/>
+                  className="w-full pl-8 pr-4 py-3 sm:py-3.5 rounded-2xl border-2 border-gray-200 focus:border-[#8B235E] focus:outline-none text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all duration-200 bg-gray-50 hover:bg-white"/>
               </div>
 
               {amountError && <p className="text-red-500 text-xs mt-2 flex items-center gap-1 font-medium"><AlertCircle size={11}/>{amountError}</p>}

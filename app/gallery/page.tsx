@@ -10,7 +10,12 @@ import {
   Heart,
   Users,
   Image as ImageIcon,
+  Filter,
 } from "lucide-react";
+
+const API = process.env.NEXT_PUBLIC_API_URL;
+
+const CATEGORIES = ["All", "General", "Events", "Education", "Health", "Volunteers", "Campaigns"];
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface Photo {
@@ -18,23 +23,8 @@ interface Photo {
   src: string;
   alt: string;
   caption: string;
+  category: string;
 }
-
-// ─── Data ──────────────────────────────────────────────────────────────────────
-const PHOTOS: Photo[] = [
-  { id: 1,  src: "/images/gallery/img1.webp",  alt: "Children at community center", caption: "Community Learning Day"     },
-  { id: 2,  src: "/images/gallery/img2.webp",  alt: "Child reading a book",         caption: "Books for Every Child"      },
-  { id: 3,  src: "/images/gallery/img3.webp",  alt: "Kids playing outdoors",        caption: "Joy in Every Moment"        },
-  { id: 4,  src: "/images/gallery/img4.webp",  alt: "Education program session",    caption: "Education Drive 2025"       },
-  { id: 5,  src: "/images/gallery/img5.webp",  alt: "Mother and child",             caption: "Family Support Program"     },
-  { id: 6,  src: "/images/gallery/img6.webp",  alt: "Volunteers with children",     caption: "Our Volunteers in Action"   },
-  { id: 7,  src: "/images/gallery/img7.webp",  alt: "Charity event outdoors",       caption: "Annual Charity Walk"        },
-  { id: 8,  src: "/images/gallery/img8.webp",  alt: "Children in classroom",        caption: "Classroom of Hope"          },
-  { id: 9,  src: "/images/gallery/img9.webp",  alt: "Kids smiling together",        caption: "Smiles We Live For"         },
-  { id: 10, src: "/images/gallery/img10.webp", alt: "Group of children",            caption: "Growing Together"           },
-  { id: 11, src: "/images/gallery/img11.webp", alt: "Fundraiser event",             caption: "Fundraiser Gala 2025"       },
-  { id: 12, src: "/images/gallery/img12.webp", alt: "Children eating together",     caption: "Nutrition & Wellness Drive" },
-];
 
 const STATS = [
   { icon: Camera, label: "Photos Captured", value: "2,400+" },
@@ -44,11 +34,7 @@ const STATS = [
 
 // ─── Lightbox ──────────────────────────────────────────────────────────────────
 const Lightbox = ({
-  photos,
-  index,
-  onClose,
-  onPrev,
-  onNext,
+  photos, index, onClose, onPrev, onNext,
 }: {
   photos: Photo[];
   index: number;
@@ -74,8 +60,7 @@ const Lightbox = ({
 
   return (
     <div
-      className="fixed inset-0 z-[200] bg-black/95 flex items-center
-        justify-center p-4"
+      className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-4"
       onClick={onClose}
     >
       {/* Close */}
@@ -108,14 +93,17 @@ const Lightbox = ({
         <img
           src={photo.src}
           alt={photo.alt}
-          className="max-h-[78vh] max-w-full object-contain rounded-2xl
-            shadow-2xl"
+          className="max-h-[78vh] max-w-full object-contain rounded-2xl shadow-2xl"
         />
         <div className="mt-5 text-center">
           <p className="text-white font-bold text-base md:text-lg">
             {photo.caption}
           </p>
-          <p className="text-white/40 text-sm mt-1">
+          <span className="inline-block mt-2 px-3 py-1 bg-[#8B235E]/80
+            text-white text-xs font-semibold rounded-full uppercase tracking-wider">
+            {photo.category}
+          </span>
+          <p className="text-white/40 text-sm mt-2">
             {index + 1} / {photos.length}
           </p>
         </div>
@@ -158,16 +146,21 @@ const PhotoCard = ({
       loading="lazy"
     />
     {/* Hover overlay */}
-    <div
-      className="absolute inset-0 bg-gradient-to-t from-black/65
-        via-transparent to-transparent opacity-0 group-hover:opacity-100
-        transition-opacity duration-300 flex items-end p-4"
+    <div className="absolute inset-0 bg-gradient-to-t from-black/75
+      via-black/20 to-transparent opacity-0 group-hover:opacity-100
+      transition-opacity duration-300 flex flex-col justify-end p-4"
     >
-      <div className="flex items-center gap-2">
-        <ImageIcon size={13} className="text-white/80 flex-shrink-0" />
-        <p className="text-white text-sm font-semibold leading-tight">
-          {photo.caption}
-        </p>
+      <div className="flex items-start gap-2">
+        <ImageIcon size={13} className="text-white/80 flex-shrink-0 mt-0.5" />
+        <div>
+          <p className="text-white text-sm font-bold leading-tight">
+            {photo.caption}
+          </p>
+          <span className="inline-block mt-1.5 px-2 py-0.5 bg-[#8B235E]
+            text-white text-[10px] font-semibold rounded uppercase tracking-wider">
+            {photo.category}
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -175,15 +168,53 @@ const PhotoCard = ({
 
 // ─── Page ──────────────────────────────────────────────────────────────────────
 export default function GalleryPage() {
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [photos, setPhotos]           = useState<Photo[]>([]);
+  const [loading, setLoading]         = useState(true);
+  const [error, setError]             = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [lightboxIndex, setLightboxIndex]   = useState<number | null>(null);
 
+  // ── Fetch ──
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const res  = await fetch(`${API}/api/gallery`);
+        const data = await res.json();
+
+        const mapped: Photo[] = data.images.map((img: any) => ({
+          id:       img.id,
+          src:      img.image_url.startsWith("/images")
+                      ? img.image_url
+                      : `${API}${img.image_url}`,
+          alt:      img.title    || "Gallery image",
+          caption:  img.title    || "",
+          category: img.category || "General",
+        }));
+
+        setPhotos(mapped);
+      } catch {
+        setError("Failed to load gallery images");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGallery();
+  }, []);
+
+  // ── Filtered photos ──
+  const filteredPhotos = activeCategory === "All"
+    ? photos
+    : photos.filter((p) => p.category === activeCategory);
+
+  // ── Lightbox handlers ──
   const openLightbox  = useCallback((i: number) => setLightboxIndex(i), []);
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
-  const prevPhoto = useCallback(() =>
+  const prevPhoto     = useCallback(() =>
     setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : i)), []);
-  const nextPhoto = useCallback(() =>
+  const nextPhoto     = useCallback(() =>
     setLightboxIndex((i) =>
-      i !== null && i < PHOTOS.length - 1 ? i + 1 : i), []);
+      i !== null && i < filteredPhotos.length - 1 ? i + 1 : i), [filteredPhotos.length]);
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -196,24 +227,16 @@ export default function GalleryPage() {
           alt="Children moments"
           className="w-full h-full object-cover object-center"
         />
-        {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/50" />
-        {/* Text */}
-        <div
-          className="absolute inset-0 flex flex-col justify-end
-            px-6 md:px-16 pb-12 md:pb-16"
+        <div className="absolute inset-0 flex flex-col justify-end
+          px-6 md:px-16 pb-12 md:pb-16"
         >
-          <span
-            className="inline-block px-4 py-1.5 bg-[#FFCC29] text-gray-900
-              text-xs font-bold uppercase tracking-widest rounded-full
-              mb-4 w-fit"
-          >
+          <span className="inline-block px-4 py-1.5 bg-[#FFCC29] text-gray-900
+            text-xs font-bold uppercase tracking-widest rounded-full mb-4 w-fit">
             Media & Gallery
           </span>
-          <h1
-            className="text-4xl md:text-6xl font-extrabold text-white
-              leading-tight mb-3"
-          >
+          <h1 className="text-4xl md:text-6xl font-extrabold text-white
+            leading-tight mb-3">
             MOMENTS THAT <br />
             <span className="text-[#FFCC29]">MATTER</span>
           </h1>
@@ -222,7 +245,7 @@ export default function GalleryPage() {
             Explore the moments that define our mission.
           </p>
           
-           <a href="#gallery"
+          <a  href="#gallery"
             className="w-fit px-8 py-3.5 bg-[#8B235E] text-white rounded-xl
               font-extrabold text-sm uppercase tracking-wider
               hover:bg-[#6b1b48] transition-all active:scale-95 shadow-lg"
@@ -242,11 +265,8 @@ export default function GalleryPage() {
                 className="flex flex-col sm:flex-row items-center
                   sm:items-start gap-2 sm:gap-4 text-center sm:text-left"
               >
-                <div
-                  className="w-10 h-10 md:w-12 md:h-12 rounded-xl
-                    bg-[#8B235E]/10 flex items-center justify-center
-                    flex-shrink-0"
-                >
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl
+                  bg-[#8B235E]/10 flex items-center justify-center flex-shrink-0">
                   <Icon size={20} className="text-[#8B235E]" />
                 </div>
                 <div>
@@ -263,20 +283,130 @@ export default function GalleryPage() {
         </div>
       </section>
 
-      {/* ── Masonry Grid ── */}
+      {/* ── Gallery Section ── */}
       <section
         id="gallery"
         className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-16"
       >
-        <div className="columns-2 sm:columns-3 lg:columns-4 gap-4">
-          {PHOTOS.map((photo, i) => (
-            <PhotoCard
-              key={photo.id}
-              photo={photo}
-              onClick={() => openLightbox(i)}
-            />
-          ))}
-        </div>
+        {/* ── Category Filter ── */}
+        {!loading && !error && photos.length > 0 && (
+          <div className="mb-8 md:mb-12">
+            {/* Title row */}
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-8 h-8 rounded-lg bg-[#8B235E]/10
+                flex items-center justify-center flex-shrink-0">
+                <Filter size={16} className="text-[#8B235E]" />
+              </div>
+              <div>
+                <h2 className="text-lg font-extrabold text-gray-800 leading-none">
+                  Browse by Category
+                </h2>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {filteredPhotos.length} photo{filteredPhotos.length !== 1 ? "s" : ""}
+                  {activeCategory !== "All" ? ` in ${activeCategory}` : " total"}
+                </p>
+              </div>
+            </div>
+
+            {/* Filter buttons */}
+            <div className="flex flex-wrap gap-2 md:gap-3">
+              {CATEGORIES.map((cat) => {
+                const count = cat === "All"
+                  ? photos.length
+                  : photos.filter((p) => p.category === cat).length;
+
+                if (count === 0 && cat !== "All") return null;
+
+                const isActive = activeCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => {
+                      setActiveCategory(cat);
+                      setLightboxIndex(null);
+                    }}
+                    className={`
+                      flex items-center gap-2 px-4 py-2 rounded-xl text-sm
+                      font-bold transition-all duration-200 border
+                      ${isActive
+                        ? "bg-[#8B235E] text-white border-[#8B235E] shadow-lg shadow-[#8B235E]/20 scale-105"
+                        : "bg-white text-gray-600 border-gray-200 hover:border-[#8B235E] hover:text-[#8B235E] hover:shadow-md"
+                      }
+                    `}
+                  >
+                    {cat}
+                    <span className={`
+                      text-[11px] font-extrabold px-1.5 py-0.5 rounded-md min-w-[20px]
+                      text-center leading-none
+                      ${isActive
+                        ? "bg-white/20 text-white"
+                        : "bg-gray-100 text-gray-500"
+                      }
+                    `}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ── Loading ── */}
+        {loading && (
+          <div className="flex justify-center items-center py-20">
+            <div className="w-10 h-10 border-4 border-[#8B235E]
+              border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
+
+        {/* ── Error ── */}
+        {error && (
+          <div className="text-center py-20">
+            <p className="text-red-500 font-semibold">{error}</p>
+          </div>
+        )}
+
+        {/* ── Empty after filter ── */}
+        {!loading && !error && filteredPhotos.length === 0 && photos.length > 0 && (
+          <div className="text-center py-20">
+            <ImageIcon size={48} className="text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500 font-bold text-lg mb-2">
+              No photos in {activeCategory}
+            </p>
+            <p className="text-gray-400 text-sm mb-6">
+              Try selecting a different category
+            </p>
+            <button
+              onClick={() => setActiveCategory("All")}
+              className="px-6 py-2.5 bg-[#8B235E] text-white rounded-xl
+                font-bold text-sm hover:bg-[#6b1b48] transition-all"
+            >
+              View All Photos
+            </button>
+          </div>
+        )}
+
+        {/* ── No images at all ── */}
+        {!loading && !error && photos.length === 0 && (
+          <div className="text-center py-20">
+            <ImageIcon size={48} className="text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-400 font-medium">No images uploaded yet.</p>
+          </div>
+        )}
+
+        {/* ── Masonry Grid ── */}
+        {!loading && !error && filteredPhotos.length > 0 && (
+          <div className="columns-2 sm:columns-3 lg:columns-4 gap-4">
+            {filteredPhotos.map((photo, i) => (
+              <PhotoCard
+                key={photo.id}
+                photo={photo}
+                onClick={() => openLightbox(i)}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ── CTA ── */}
@@ -291,16 +421,14 @@ export default function GalleryPage() {
           <h2 className="text-2xl md:text-4xl font-extrabold text-white mb-4">
             Want to be part of our story?
           </h2>
-          <p
-            className="text-white/75 mb-8 max-w-md mx-auto
-              text-sm md:text-base leading-relaxed"
-          >
+          <p className="text-white/75 mb-8 max-w-md mx-auto
+            text-sm md:text-base leading-relaxed">
             Join us as a donor, volunteer, or sponsor and help us create
             more moments like these.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             
-          <a    href="/donate"
+            <a  href="/donate"
               className="px-8 py-3.5 bg-[#FFCC29] text-gray-900 rounded-xl
                 font-extrabold text-sm uppercase tracking-wider
                 hover:bg-yellow-300 transition-all active:scale-95 shadow-lg"
@@ -311,8 +439,7 @@ export default function GalleryPage() {
            <a   href="/volunteer"
               className="px-8 py-3.5 bg-transparent border-2 border-white
                 text-white rounded-xl font-extrabold text-sm uppercase
-                tracking-wider hover:bg-white/10 transition-all
-                active:scale-95"
+                tracking-wider hover:bg-white/10 transition-all active:scale-95"
             >
               Volunteer With Us
             </a>
@@ -323,7 +450,7 @@ export default function GalleryPage() {
       {/* ── Lightbox ── */}
       {lightboxIndex !== null && (
         <Lightbox
-          photos={PHOTOS}
+          photos={filteredPhotos}
           index={lightboxIndex}
           onClose={closeLightbox}
           onPrev={prevPhoto}
