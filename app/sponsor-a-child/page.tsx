@@ -5,8 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Clock, ArrowRight, Heart, MapPin, Search, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 // ── Design tokens ─────────────────────────────────────────────
 const MAROON  = "#8B235E";
 const GREEN   = "#009270";

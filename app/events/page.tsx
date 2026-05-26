@@ -12,7 +12,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Category = "all" | "upcoming" | "fundraiser" | "past";
@@ -98,14 +98,14 @@ const SkeletonCard = () => (
 const EventCard = ({ event }: { event: Event }) => {
   const cfg = CATEGORY_CONFIG[event.category] || CATEGORY_CONFIG.past;
 
- const href =
+  const href =
     event.category === "past"
       ? `/events/recap?event_id=${event.id}`
       : event.category === "fundraiser"
       ? `/donate?campaign=${event.id}`
       : `/events/register?event_id=${event.id}&event_title=${encodeURIComponent(event.title)}`;
 
-const btnStyle =
+  const btnStyle =
     event.category === "upcoming"
       ? { background: "transparent", color: "#009270", border: "1.5px solid #009270" }
       : event.category === "fundraiser"
@@ -131,6 +131,9 @@ const btnStyle =
           src={resolveImageUrl(event.image_url)}
           alt={event.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = "/images/gallery/img1.webp";
+          }}
         />
         {/* Category badge */}
         <span
@@ -183,8 +186,9 @@ const btnStyle =
 
         {/* Button */}
         
-      <a    href={href}
-className="inline-flex items-center justify-center gap-2 py-2.5 px-4 text-[11px] font-bold uppercase tracking-wider transition-opacity duration-200 hover:opacity-80 active:scale-95"          style={btnStyle}
+         <a href={href}
+          className="inline-flex items-center justify-center gap-2 py-2.5 px-4 text-[11px] font-bold uppercase tracking-wider transition-opacity duration-200 hover:opacity-80 active:scale-95"
+          style={btnStyle}
         >
           {event.button_label || (event.category === "past" ? "View Recap" : "Learn More")}
           <ArrowRight size={13} />
@@ -242,14 +246,26 @@ export default function EventsPage() {
     try {
       setLoading(true);
       setError("");
+
+      // ✅ Fix 1 — API URL check
+      if (!API_URL) throw new Error("API URL not configured");
+
       const url = category === "all"
         ? `${API_URL}/api/events`
         : `${API_URL}/api/events?category=${category}`;
+
       const res = await fetch(url);
-      if (!res.ok) throw new Error("Failed");
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
       const data = await res.json();
-      setEvents(data.events || []);
-    } catch {
+
+      // ✅ Fix 2 — data format check
+      if (!data.events || !Array.isArray(data.events))
+        throw new Error("Invalid response format");
+
+      setEvents(data.events);
+    } catch (err: any) {
+      console.warn("Events fetch failed:", err.message);
       setError("Failed to load events. Please try again.");
     } finally {
       setLoading(false);
@@ -264,19 +280,17 @@ export default function EventsPage() {
   const filtered = events.filter((e) => {
     const q = searchQuery.toLowerCase();
     return (
-      e.title.toLowerCase().includes(q)    ||
-      e.location.toLowerCase().includes(q) ||
+      e.title.toLowerCase().includes(q)       ||
+      e.location.toLowerCase().includes(q)    ||
       e.description.toLowerCase().includes(q)
     );
   });
 
-  // ── Tab counts ──
-  const counts = {
-    all:        events.length,
-    upcoming:   events.filter((e) => e.category === "upcoming").length,
-    fundraiser: events.filter((e) => e.category === "fundraiser").length,
-    past:       events.filter((e) => e.category === "past").length,
-  };
+  // ✅ Fix 3 — counts fixed
+  const getCounts = useCallback((category: Category) => {
+    if (category === "all") return events.length;
+    return events.filter((e) => e.category === category).length;
+  }, [events]);
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -286,7 +300,6 @@ export default function EventsPage() {
       <section className="relative bg-white border-b border-gray-100
         pt-32 pb-14 md:pb-20 px-4 overflow-hidden"
       >
-        {/* Background decoration */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px]
           bg-[#8B235E]/[0.03] rounded-full -translate-y-1/2
           translate-x-1/2 pointer-events-none"
@@ -355,9 +368,9 @@ export default function EventsPage() {
             mt-8 flex-wrap"
           >
             {[
-              { label: "Total Events",  value: events.length    },
-              { label: "Upcoming",      value: counts.upcoming  },
-              { label: "Fundraisers",   value: counts.fundraiser },
+              { label: "Total Events",  value: getCounts("all")        },
+              { label: "Upcoming",      value: getCounts("upcoming")   },
+              { label: "Fundraisers",   value: getCounts("fundraiser") },
             ].map(({ label, value }) => (
               <div key={label} className="text-center">
                 <p className="text-2xl font-extrabold text-gray-800">
@@ -387,9 +400,7 @@ export default function EventsPage() {
               className="text-gray-400 flex-shrink-0 mr-2"
             />
             {TABS.map((tab) => {
-              const count = tab.value === "all"
-                ? events.length
-                : events.filter((e) => e.category === tab.value).length;
+              const count = getCounts(tab.value); // ✅ fixed counts
               const isActive = activeTab === tab.value;
 
               return (
@@ -496,7 +507,6 @@ export default function EventsPage() {
           to-[#6b1b48] rounded-2xl px-8 py-10 md:py-12 overflow-hidden
           shadow-[0_8px_32px_rgba(139,35,94,0.25)]"
         >
-          {/* Decoration */}
           <div className="absolute top-0 right-0 w-64 h-64
             bg-white/[0.04] rounded-full -translate-y-1/2
             translate-x-1/2 pointer-events-none"
@@ -538,7 +548,7 @@ export default function EventsPage() {
                 Get in Touch
               </a>
               
-             <a   href="/volunteer"
+              <a  href="/volunteer"
                 className="bg-white/10 border border-white/20 text-white
                   px-6 py-3 rounded-xl font-extrabold text-sm uppercase
                   tracking-wider hover:bg-white/20 transition-all

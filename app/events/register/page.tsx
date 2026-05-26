@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Header from "@/components/home/Header";
 import { ArrowLeft, CheckCircle, User, Mail, Phone, MessageSquare, Calendar, MapPin } from "lucide-react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 interface Event {
   id: number;
@@ -37,21 +37,23 @@ function RegisterForm() {
   const eventId       = searchParams.get("event_id");
   const eventTitle    = searchParams.get("event_title") || "";
 
-  const [event, setEvent]       = useState<Event | null>(null);
-  const [form, setForm]         = useState(EMPTY_FORM);
-  const [loading, setLoading]   = useState(false);
-  const [success, setSuccess]   = useState(false);
-  const [error, setError]       = useState("");
+  const [event, setEvent]     = useState<Event | null>(null);
+  const [form, setForm]       = useState(EMPTY_FORM);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError]     = useState("");
 
+  // ── Fetch Event ──
   useEffect(() => {
     if (!eventId) return;
     const fetchEvent = async () => {
       try {
-        const res  = await fetch(`${API_URL}/api/events/${eventId}`);
+        const res = await fetch(`${API_URL}/api/events/${eventId}`);
+        if (!res.ok) throw new Error(`Server error: ${res.status}`); // ✅ Fix 1
         const data = await res.json();
         if (data.success) setEvent(data.event);
-      } catch {
-        console.error("Failed to fetch event");
+      } catch (err: any) {
+        console.warn("Failed to fetch event:", err.message); // ✅ Fix 1
       }
     };
     fetchEvent();
@@ -121,10 +123,16 @@ function RegisterForm() {
               We will contact you at <strong>{form.email}</strong> or <strong>{form.phone}</strong> with further details.
             </p>
             <div className="flex flex-col gap-3">
-              <button onClick={() => router.push("/events")} className="bg-[#8B235E] text-white py-3 px-6 rounded-xl font-bold text-sm hover:bg-[#6b1b48] transition-all">
+              <button
+                onClick={() => router.push("/events")}
+                className="bg-[#8B235E] text-white py-3 px-6 rounded-xl font-bold text-sm hover:bg-[#6b1b48] transition-all"
+              >
                 Back to Events
               </button>
-              <button onClick={() => router.push("/")} className="bg-gray-100 text-gray-600 py-3 px-6 rounded-xl font-bold text-sm hover:bg-gray-200 transition-all">
+              <button
+                onClick={() => router.push("/")}
+                className="bg-gray-100 text-gray-600 py-3 px-6 rounded-xl font-bold text-sm hover:bg-gray-200 transition-all"
+              >
                 Go to Home
               </button>
             </div>
@@ -160,6 +168,9 @@ function RegisterForm() {
                 src={event?.image_url ? resolveImageUrl(event.image_url) : "/images/gallery/img1.webp"}
                 alt={event?.title || eventTitle}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "/images/gallery/img1.webp"; // ✅ Fix 2
+                }}
               />
               {/* subtle dark gradient at bottom */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
@@ -212,8 +223,11 @@ function RegisterForm() {
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Name *</label>
                 <div className="relative">
                   <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="e.g. Ravi Kumar"
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8B235E]/20 focus:border-[#8B235E] transition-all" />
+                  <input
+                    type="text" name="name" value={form.name} onChange={handleChange}
+                    placeholder="e.g. Ravi Kumar"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8B235E]/20 focus:border-[#8B235E] transition-all"
+                  />
                 </div>
               </div>
 
@@ -222,8 +236,11 @@ function RegisterForm() {
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Address *</label>
                 <div className="relative">
                   <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="e.g. ravi@email.com"
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8B235E]/20 focus:border-[#8B235E] transition-all" />
+                  <input
+                    type="email" name="email" value={form.email} onChange={handleChange}
+                    placeholder="e.g. ravi@email.com"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8B235E]/20 focus:border-[#8B235E] transition-all"
+                  />
                 </div>
               </div>
 
@@ -232,8 +249,11 @@ function RegisterForm() {
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Phone Number *</label>
                 <div className="relative">
                   <Phone size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="e.g. 9876543210" maxLength={10}
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8B235E]/20 focus:border-[#8B235E] transition-all" />
+                  <input
+                    type="tel" name="phone" value={form.phone} onChange={handleChange}
+                    placeholder="e.g. 9876543210" maxLength={10}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8B235E]/20 focus:border-[#8B235E] transition-all"
+                  />
                 </div>
               </div>
 
@@ -242,14 +262,19 @@ function RegisterForm() {
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Message (Optional)</label>
                 <div className="relative">
                   <MessageSquare size={15} className="absolute left-3.5 top-3.5 text-gray-400" />
-                  <textarea name="message" value={form.message} onChange={handleChange} placeholder="Any questions or special requirements..." rows={3}
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8B235E]/20 focus:border-[#8B235E] transition-all resize-none" />
+                  <textarea
+                    name="message" value={form.message} onChange={handleChange}
+                    placeholder="Any questions or special requirements..." rows={3}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#8B235E]/20 focus:border-[#8B235E] transition-all resize-none"
+                  />
                 </div>
               </div>
 
               {/* Submit */}
-              <button type="submit" disabled={loading}
-                className="w-full bg-[#8B235E] hover:bg-[#6b1b48] text-white py-3.5 rounded-xl font-extrabold text-sm uppercase tracking-wider transition-all duration-200 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed shadow-[0_4px_12px_rgba(139,35,94,0.3)]">
+              <button
+                type="submit" disabled={loading}
+                className="w-full bg-[#8B235E] hover:bg-[#6b1b48] text-white py-3.5 rounded-xl font-extrabold text-sm uppercase tracking-wider transition-all duration-200 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed shadow-[0_4px_12px_rgba(139,35,94,0.3)]"
+              >
                 {loading ? "Submitting..." : "Register Now →"}
               </button>
 

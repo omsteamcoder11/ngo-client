@@ -17,7 +17,6 @@ const API = process.env.NEXT_PUBLIC_API_URL;
 
 const CATEGORIES = ["All", "General", "Events", "Education", "Health", "Volunteers", "Campaigns"];
 
-// ─── Types ─────────────────────────────────────────────────────────────────────
 interface Photo {
   id: number;
   src: string;
@@ -63,7 +62,6 @@ const Lightbox = ({
       className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-4"
       onClick={onClose}
     >
-      {/* Close */}
       <button
         onClick={onClose}
         aria-label="Close lightbox"
@@ -73,7 +71,6 @@ const Lightbox = ({
         <X size={22} />
       </button>
 
-      {/* Prev */}
       <button
         onClick={(e) => { e.stopPropagation(); onPrev(); }}
         disabled={index === 0}
@@ -85,7 +82,6 @@ const Lightbox = ({
         <ChevronLeft size={26} />
       </button>
 
-      {/* Image */}
       <div
         className="relative max-w-5xl w-full flex flex-col items-center"
         onClick={(e) => e.stopPropagation()}
@@ -94,6 +90,9 @@ const Lightbox = ({
           src={photo.src}
           alt={photo.alt}
           className="max-h-[78vh] max-w-full object-contain rounded-2xl shadow-2xl"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = "/images/placeholder.webp";
+          }}
         />
         <div className="mt-5 text-center">
           <p className="text-white font-bold text-base md:text-lg">
@@ -109,7 +108,6 @@ const Lightbox = ({
         </div>
       </div>
 
-      {/* Next */}
       <button
         onClick={(e) => { e.stopPropagation(); onNext(); }}
         disabled={index === photos.length - 1}
@@ -144,8 +142,10 @@ const PhotoCard = ({
       className="w-full h-auto block transition-transform duration-500
         group-hover:scale-105"
       loading="lazy"
+      onError={(e) => {
+        (e.target as HTMLImageElement).src = "/images/placeholder.webp";
+      }}
     />
-    {/* Hover overlay */}
     <div className="absolute inset-0 bg-gradient-to-t from-black/75
       via-black/20 to-transparent opacity-0 group-hover:opacity-100
       transition-opacity duration-300 flex flex-col justify-end p-4"
@@ -168,39 +168,61 @@ const PhotoCard = ({
 
 // ─── Page ──────────────────────────────────────────────────────────────────────
 export default function GalleryPage() {
-  const [photos, setPhotos]           = useState<Photo[]>([]);
-  const [loading, setLoading]         = useState(true);
-  const [error, setError]             = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [lightboxIndex, setLightboxIndex]   = useState<number | null>(null);
+  const [photos, setPhotos]                   = useState<Photo[]>([]);
+  const [loading, setLoading]                 = useState(true);
+  const [error, setError]                     = useState("");
+  const [activeCategory, setActiveCategory]   = useState("All");
+  const [lightboxIndex, setLightboxIndex]     = useState<number | null>(null);
 
-  // ── Fetch ──
-  useEffect(() => {
-    const fetchGallery = async () => {
-      try {
-        const res  = await fetch(`${API}/api/gallery`);
-        const data = await res.json();
+  // ── Fetch (moved outside useEffect for retry support) ──
+  const fetchGallery = useCallback(async () => {
+    setLoading(true);
+    setError("");
 
-        const mapped: Photo[] = data.images.map((img: any) => ({
-          id:       img.id,
-          src:      img.image_url.startsWith("/images")
-                      ? img.image_url
-                      : `${API}${img.image_url}`,
-          alt:      img.title    || "Gallery image",
-          caption:  img.title    || "",
-          category: img.category || "General",
-        }));
+    // Check env variable
+    if (!API) {
+      setError("API URL not configured. Check NEXT_PUBLIC_API_URL in .env");
+      setLoading(false);
+      return;
+    }
 
-        setPhotos(mapped);
-      } catch {
-        setError("Failed to load gallery images");
-      } finally {
-        setLoading(false);
+    try {
+      const res = await fetch(`${API}/api/gallery`);
+
+      // Check HTTP status
+      if (!res.ok) {
+        throw new Error(`Server error: ${res.status}`);
       }
-    };
 
-    fetchGallery();
+      const data = await res.json();
+
+      // Check data format
+      if (!data.images || !Array.isArray(data.images)) {
+        throw new Error("Invalid response format from server");
+      }
+
+      const mapped: Photo[] = data.images.map((img: any) => ({
+        id:       img.id,
+        src:      img.image_url.startsWith("/images")
+                    ? img.image_url
+                    : `${API}${img.image_url}`,
+        alt:      img.title    || "Gallery image",
+        caption:  img.title    || "",
+        category: img.category || "General",
+      }));
+
+      setPhotos(mapped);
+    } catch (err: any) {
+      console.warn("Gallery fetch failed:", err.message);
+      setError("Failed to load gallery images");
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchGallery();
+  }, [fetchGallery]);
 
   // ── Filtered photos ──
   const filteredPhotos = activeCategory === "All"
@@ -291,7 +313,6 @@ export default function GalleryPage() {
         {/* ── Category Filter ── */}
         {!loading && !error && photos.length > 0 && (
           <div className="mb-8 md:mb-12">
-            {/* Title row */}
             <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-8 rounded-lg bg-[#8B235E]/10
                 flex items-center justify-center flex-shrink-0">
@@ -308,7 +329,6 @@ export default function GalleryPage() {
               </div>
             </div>
 
-            {/* Filter buttons */}
             <div className="flex flex-wrap gap-2 md:gap-3">
               {CATEGORIES.map((cat) => {
                 const count = cat === "All"
@@ -363,7 +383,18 @@ export default function GalleryPage() {
         {/* ── Error ── */}
         {error && (
           <div className="text-center py-20">
-            <p className="text-red-500 font-semibold">{error}</p>
+            <ImageIcon size={48} className="text-gray-300 mx-auto mb-4" />
+            <p className="text-red-500 font-semibold mb-2">{error}</p>
+            <p className="text-gray-400 text-sm mb-6">
+              Please check your connection and try again
+            </p>
+            <button
+              onClick={fetchGallery}
+              className="px-6 py-2.5 bg-[#8B235E] text-white rounded-xl
+                font-bold text-sm hover:bg-[#6b1b48] transition-all"
+            >
+              Try Again
+            </button>
           </div>
         )}
 
@@ -428,7 +459,7 @@ export default function GalleryPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             
-            <a  href="/donate"
+           <a   href="/donate"
               className="px-8 py-3.5 bg-[#FFCC29] text-gray-900 rounded-xl
                 font-extrabold text-sm uppercase tracking-wider
                 hover:bg-yellow-300 transition-all active:scale-95 shadow-lg"

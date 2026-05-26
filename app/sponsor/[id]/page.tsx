@@ -9,8 +9,7 @@ declare global {
   interface Window { Razorpay: any }
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-const RAZORPAY_KEY = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';const RAZORPAY_KEY = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
 
 const impactOptions = [
   { title: "School Supplies",  price: 1000, desc: "Books & Stationery", icon: "📚", color: "from-violet-500 to-purple-600" },

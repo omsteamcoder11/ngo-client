@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Header from "@/components/home/Header";
 import { ArrowLeft, Calendar, MapPin, Tag } from "lucide-react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 interface Event {
   id:          number;
@@ -39,19 +39,21 @@ function RecapContent() {
   const router       = useRouter();
   const eventId      = searchParams.get("event_id");
 
-  const [event, setEvent]   = useState<Event | null>(null);
+  const [event, setEvent]     = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError]   = useState("");
+  const [error, setError]     = useState("");
 
   useEffect(() => {
     if (!eventId) { setError("Event not found."); setLoading(false); return; }
     const fetch_ = async () => {
       try {
-        const res  = await fetch(`${API_URL}/api/events/${eventId}`);
+        const res = await fetch(`${API_URL}/api/events/${eventId}`);
+        if (!res.ok) throw new Error(`Server error: ${res.status}`); // ✅ Fix 1
         const data = await res.json();
         if (data.success) setEvent(data.event);
         else setError("Event not found.");
-      } catch {
+      } catch (err: any) {
+        console.warn("Failed to load event:", err.message); // ✅ Fix 1
         setError("Failed to load event.");
       } finally {
         setLoading(false);
@@ -74,7 +76,10 @@ function RecapContent() {
       <Header />
       <div className="max-w-3xl mx-auto px-4 pt-32 pb-16 text-center">
         <p className="text-gray-400 text-sm mb-4">{error || "Event not found."}</p>
-        <button onClick={() => router.push("/events")} className="text-sm font-semibold text-[#8B235E] underline underline-offset-4">
+        <button
+          onClick={() => router.push("/events")}
+          className="text-sm font-semibold text-[#8B235E] underline underline-offset-4"
+        >
           Back to Events
         </button>
       </div>
@@ -128,6 +133,9 @@ function RecapContent() {
             src={resolveImageUrl(event.image_url)}
             alt={event.title}
             className="w-full h-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "/images/gallery/img1.webp"; // ✅ Fix 2
+            }}
           />
         </div>
 
