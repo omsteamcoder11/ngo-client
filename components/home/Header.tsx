@@ -1,326 +1,275 @@
 "use client";
-
+import SupportModal from "./SupportModal"
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Search, Heart, ShieldCheck, ChevronDown, Menu, X } from 'lucide-react';
+import { Search, Heart, ChevronDown, Menu, X } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 interface NavItem {
   topText: string;
   bottomText: string;
   key: string;
-  columns: { label: string; href: string }[][];
+  links: { label: string; href: string }[];
+  align?: 'left' | 'center' | 'right';
 }
-
 interface DropdownLinkProps {
-  label: string;
-  href?: string;
-  onClick?: () => void;
+  label: string; href?: string; onClick?: () => void;
 }
-
 interface NavTriggerProps {
-  topText: string;
-  bottomText: string;
-  isOpen: boolean;
-  onClick: (e: React.MouseEvent) => void;
-  id: string;
-  controlsId: string;
+  topText: string; bottomText: string; isOpen: boolean;
+  onClick: (e: React.MouseEvent) => void; id: string; controlsId: string;
 }
-
 interface MobileAccordionProps {
-  title: string;
-  children: React.ReactNode;
+  title: string; children: React.ReactNode;
 }
-
 interface DropdownContainerProps {
-  children: React.ReactNode;
-  id: string;
-  isOpen: boolean;
+  children: React.ReactNode; id: string; isOpen: boolean;
+  align?: 'left' | 'center' | 'right';
 }
-
 interface NavItemWrapperProps {
-  navKey: string;
-  activeMenu: string | null;
-  onOpen: (key: string) => void;
-  onClose: () => void;
+  navKey: string; activeMenu: string | null;
+  onOpen: (key: string) => void; onClose: () => void;
   children: React.ReactNode;
 }
 
 const NAV_ITEMS: NavItem[] = [
   {
-    key: 'learn',
-    topText: 'LEARN',
-    bottomText: 'ABOUT US',
-    columns: [
-      [
-        { label: 'ACCOUNTABILITY',       href: '/accountability' },
-        { label: 'CONTACT US',           href: '/contact'        },
-        { label: 'FAQS',                 href: '/faqs'           },
-        { label: 'OUR MISSION & VISION', href: '/mission'        },
-        { label: 'OUR LEADERSHIP',       href: '/leadership'     },
-      ],
-      [
-        { label: 'NEWSROOM & RESOURCES', href: '/news'    },
-        { label: 'STRATEGIC PARTNERS',   href: '/partner' },
-        { label: 'CAREERS',              href: '/careers' },
-        { label: 'GLOBAL PHILANTHROPY',  href: '/global'  },
-      ],
+    key: 'about', topText: 'LEARN', bottomText: 'ABOUT US', align: 'left',
+    links: [
+      { label: 'MISSION & VISION', href: '/mission' },
+      // { label: 'OUR HISTORY',      href: '/history' },
+      // { label: 'OUR LEADERSHIP',   href: '/leadership' },
+      { label: 'CONTACT US',       href: '/contact' },
     ],
   },
   {
-    key: 'difference',
-    topText: 'MAKE A',
-    bottomText: 'DIFFERENCE',
-    columns: [
-      [
-        { label: 'SPONSOR A CHILD',    href: '/sponsor-a-child' },
-        { label: 'DONATE',             href: '/donate'          },
-        { label: 'OTHER WAYS TO HELP', href: '/help'            },
-      ],
-      [
-        { label: 'WAYS TO DONATE',    href: '/donate'   },
-        { label: 'GIFT PLANNING',     href: '/gift'     },
-        { label: 'EMPLOYER MATCHING', href: '/employer' },
-      ],
+    key: 'services', topText: 'OUR', bottomText: 'ACTIVITY', align: 'left',
+    links: [
+      { label: 'TEMPLE CONSTRUCTION',  href: '/services/construction' },
+      { label: 'ANNADHANAM (FREE MEALS)', href: '/services/annadhanam' },
+      { label: 'EDUCATION AID',        href: '/services/education' },
+      { label: 'ALL SEVA PROGRAMS',    href: '/programs' },
     ],
   },
   {
-    key: 'impact',
-    topText: 'SEE OUR',
-    bottomText: 'IMPACT',
-    columns: [
-      [
-        { label: 'OUR PROGRAMS',          href: '/programs' },
-        { label: 'WHERE WE WORK',         href: '/work'     },
-        { label: 'HOW SPONSORSHIP WORKS', href: '/sponsers' },
-      ],
-      [
-        { label: 'OUR STORIES',   href: '/stories' },
-        { label: 'WHY CHOOSE US', href: '/why-us'  },
-      ],
+    key: 'impact', topText: 'SEE OUR', bottomText: 'IMPACT', align: 'center',
+    links: [
+      // { label: 'SUCCESS STORIES', href: '/stories' },
+      { label: 'GALLERY & MEDIA', href: '/gallery' },
+      { label: 'TESTIMONIALS',    href: '/testimonials' },
     ],
   },
   {
-    key: 'employment',
-    topText: 'INTO EMPLOYMENT',
-    bottomText: 'PROGRAM',
-    columns: [
-      [
-        { label: 'ABOUT INTO EMPLOYMENT', href: '/employment' },
-        { label: 'IMPACT',                href: '/impact'     },
-      ],
-      [
-        { label: 'JOURNEY', href: '/journey' },
-        { label: 'DONATE',  href: '/donate'  },
-      ],
+    key: 'donate', topText: 'MAKE A', bottomText: 'DIFFERENCE', align: 'right',
+    links: [
+      { label: 'DONATE NOW',             href: '/donate' },
+      { label: 'SPONSOR A SEVA',         href: '/sponsor-form' },
+{ label: 'FUND TEMPLE CONSTRUCTION', href: '/services/construction' },
+      { label: 'VOLUNTEER WITH US',      href: '/volunteer' },
     ],
   },
-  {
-    key: 'activity',
-    topText: 'OUR',
-    bottomText: 'ACTIVITY',
-    columns: [
-      [
-        { label: 'TESTIMONIALS',       href: '/testimonials' },
-        { label: 'VOLUNTEER WITH US',  href: '/volunteer'    },
-        { label: 'AWARENESS PROGRAMS', href: '/awareness'    },
-         { label: 'EVENTS & FUNDRAISERS',href: '/events'       },
-      ],
-      [
-        { label: 'CAMPAIGNS',       href: '/campaigns' },
-        { label: 'MEDIA & GALLERY', href: '/gallery'   },
-      ],
-    ],
-  },
-
-  
 ];
 
-// ─── NavTrigger ───────────────────────────────────────────────────────────────
-const NavTrigger = ({
-  topText, bottomText, isOpen, onClick, id, controlsId,
-}: NavTriggerProps) => (
-  <button
-    id={id}
-    aria-haspopup="true"
-    aria-expanded={isOpen}
-    aria-controls={controlsId}
-    onClick={onClick}
-    className="flex flex-col items-center group outline-none
-      focus-visible:ring-2 focus-visible:ring-[#8B235E]
-      focus-visible:ring-offset-2 rounded-sm px-1 py-0.5"
+/* ── Theme tokens ── */
+const T = {
+  navBg:        '#ffffff',
+  navBorder:    'rgba(234,88,12,0.12)',
+  navShadow:    '0 4px 32px rgba(120,40,0,0.10)',
+  navText:      '#1c0a00',
+  navMuted:     '#92400e',
+  navSubtle:    'rgba(146,64,14,0.45)',
+  saffron:      '#ea580c',
+  saffronLight: '#fb923c',
+  saffronDeep:  '#c2410c',
+  gold:         '#d97706',
+  goldLight:    '#fbbf24',
+  dropBg:       '#ffffff',
+  dropBorder:   'rgba(234,88,12,0.14)',
+  dropText:     '#1c0a00',
+  dropMuted:    '#92400e',
+  dropHover:    '#ea580c',
+  mobileBg:     '#fff8f3',
+  mobileText:   '#1c0a00',
+};
+
+/* ── Diya SVG ── */
+const DiyaIcon = ({ size = 32 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 40 40" fill="none"
+    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <ellipse cx="20" cy="10" rx="3" ry="5" fill="#FCD34D" opacity="0.9" />
+    <ellipse cx="20" cy="11" rx="1.8" ry="3.5" fill="#F97316" />
+    <ellipse cx="20" cy="12.5" rx="1" ry="2" fill="#FEF3C7" />
+    <rect x="19.3" y="14" width="1.4" height="3" rx="0.7" fill="#92400E" />
+    <path d="M10 20 Q10 17 20 17 Q30 17 30 20 L28 28 Q28 30 20 30 Q12 30 12 28 Z" fill="#F59E0B" />
+    <path d="M12 21 Q12 19 20 19 Q28 19 28 21 L26.5 27 Q26.5 28.5 20 28.5 Q13.5 28.5 13.5 27 Z" fill="#FCD34D" />
+    <path d="M28 21 Q33 20 34 22 Q33 25 28 24" fill="#F59E0B" stroke="#D97706" strokeWidth="0.5" />
+    <rect x="13" y="29" width="14" height="3" rx="1.5" fill="#D97706" />
+    <rect x="15" y="31" width="10" height="2" rx="1" fill="#92400E" />
+    <circle cx="20" cy="7" r="1.2" fill="#FEF9C3" opacity="0.8" />
+  </svg>
+);
+
+/* ── NavTrigger ── */
+const NavTrigger = ({ topText, bottomText, isOpen, onClick, id, controlsId }: NavTriggerProps) => (
+  <button id={id} aria-haspopup="true" aria-expanded={isOpen}
+    aria-controls={controlsId} onClick={onClick}
+    style={{ outline: 'none', background: 'none', border: 'none', cursor: 'pointer', padding: '2px 4px' }}
+    className="flex flex-col items-center group focus-visible:ring-2 focus-visible:ring-orange-300 focus-visible:ring-offset-2 rounded-sm"
   >
-    <span
-      className={`text-[10px] font-black transition-colors duration-200
-        uppercase tracking-[0.2em] mb-0.5
-        ${isOpen ? 'text-[#8B235E]' : 'text-gray-400 group-hover:text-[#8B235E]'}`}
-    >
+    <span style={{
+      fontSize: 9, fontWeight: 800, letterSpacing: '0.22em',
+      textTransform: 'uppercase', display: 'block', marginBottom: 2,
+      color: isOpen ? T.saffron : T.navSubtle,
+      transition: 'color 200ms',
+    }} className="group-hover:!text-orange-500">
       {topText}
     </span>
-    <div className="flex items-center space-x-1.5">
-      <span
-        className={`text-[14px] font-bold transition-colors duration-200
-          uppercase tracking-tight
-          ${isOpen ? 'text-[#009270]' : 'text-gray-700 group-hover:text-[#009270]'}`}
-      >
+    <div className="flex items-center gap-1.5">
+      <span style={{
+        fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '-0.01em',
+        color: isOpen ? T.saffron : T.navText,
+        transition: 'color 200ms',
+      }} className="group-hover:!text-orange-600">
         {bottomText}
       </span>
-      <ChevronDown
-        size={14}
-        aria-hidden="true"
-        className={`transition-all duration-300
-          ease-[cubic-bezier(0.34,1.56,0.64,1)]
-          ${isOpen
-            ? 'rotate-180 text-[#009270]'
-            : 'rotate-0 text-gray-400 group-hover:text-[#009270]'}`}
-      />
+      <ChevronDown size={13} aria-hidden="true" style={{
+        color: isOpen ? T.saffron : T.navSubtle,
+        transition: 'transform 300ms, color 200ms',
+        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+      }} />
     </div>
-    {/* Underline */}
-    <div className={`h-[3px] bg-[#009270] rounded-full transition-all
-      duration-300 mt-1.5
-      ${isOpen ? 'w-full' : 'w-0 group-hover:w-full'}`}
-    />
+    <div style={{
+      height: 2, borderRadius: 2, marginTop: 5,
+      background: `linear-gradient(90deg,${T.saffron},${T.goldLight})`,
+      transition: 'width 280ms ease',
+      width: isOpen ? '100%' : '0%',
+    }} className="group-hover:!w-full" />
   </button>
 );
 
-// ─── DropdownContainer ────────────────────────────────────────────────────────
-const DropdownContainer = ({ children, id, isOpen }: DropdownContainerProps) => {
+/* ── DropdownContainer ── */
+const DropdownContainer = ({ children, id, isOpen, align = 'center' }: DropdownContainerProps) => {
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
     if (isOpen) {
-      // single rAF — sufficient, no hydration risk
       const t = requestAnimationFrame(() => setMounted(true));
       return () => cancelAnimationFrame(t);
-    } else {
-      setMounted(false);
-    }
+    } else { setMounted(false); }
   }, [isOpen]);
 
+  const alignStyle: React.CSSProperties =
+    align === 'left'  ? { left: 0,    transform: mounted ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.97)' } :
+    align === 'right' ? { right: 0,   transform: mounted ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.97)' } :
+                        { left: '50%', transform: mounted ? 'translateY(0) translateX(-50%) scale(1)' : 'translateY(-10px) translateX(-50%) scale(0.97)' };
+
+  const arrowPos = align === 'left' ? { left: 24 } : align === 'right' ? { right: 24 } : { left: '50%', marginLeft: -6 };
+
   return (
-    <div
-      id={id}
-      role="region"
-      style={{
-        opacity: mounted ? 1 : 0,
-        transform: mounted
-          ? 'translateY(0px) translateX(-50%) scale(1)'
-          : 'translateY(-12px) translateX(-50%) scale(0.96)',
-        transition: 'opacity 220ms cubic-bezier(0.16,1,0.3,1), transform 280ms cubic-bezier(0.34,1.2,0.64,1)',
-        pointerEvents: mounted ? 'auto' : 'none',
-        willChange: 'opacity, transform',
-      }}
-      className="absolute top-full left-1/2 mt-3
-        w-[580px] bg-white/98 backdrop-blur-xl
-        shadow-[0_24px_80px_rgba(0,0,0,0.13)]
-        rounded-2xl border border-gray-100 p-8
-        grid grid-cols-2 gap-x-12 z-[9999]"
-    >
-      {/* Gradient top accent — from improved version */}
-      <div className="absolute top-0 left-8 right-8 h-[2px] rounded-full
-        bg-gradient-to-r from-[#8B235E] via-[#009270] to-[#8B235E] opacity-50"
-      />
-
-      {/* Arrow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2
-        -translate-y-1/2 w-3 h-3 bg-white border-l border-t
-        border-gray-100 rotate-45"
-      />
-
-      {/* Staggered columns */}
-      {React.Children.map(children, (child, colIdx) => (
-        <div
-          key={colIdx}
-          style={{
-            opacity: mounted ? 1 : 0,
-            transform: mounted ? 'translateY(0)' : 'translateY(8px)',
-            transition: `opacity 280ms ease ${colIdx * 40 + 80}ms,
-                         transform 280ms ease ${colIdx * 40 + 80}ms`,
-          }}
-        >
-          {child}
-        </div>
-      ))}
+    <div id={id} role="region" style={{
+      position: 'absolute', top: '100%', marginTop: 14,
+      width: 240, zIndex: 9999,
+      background: T.dropBg,
+      border: `1px solid ${T.dropBorder}`,
+      borderRadius: 18,
+      padding: '1.5rem',
+      display: 'flex', flexDirection: 'column', gap: 2,
+      boxShadow: '0 20px 60px rgba(120,40,0,0.12), 0 4px 16px rgba(120,40,0,0.08)',
+      opacity: mounted ? 1 : 0,
+      pointerEvents: mounted ? 'auto' : 'none',
+      transition: 'opacity 220ms cubic-bezier(0.16,1,0.3,1), transform 280ms cubic-bezier(0.34,1.2,0.64,1)',
+      ...alignStyle,
+    }}>
+      <div style={{
+        position: 'absolute', top: 0, left: 20, right: 20, height: 3, borderRadius: 2,
+        background: `linear-gradient(90deg,${T.saffron},${T.gold},${T.saffronLight})`,
+      }} />
+      <div style={{
+        position: 'absolute', top: -7, width: 13, height: 13,
+        background: T.dropBg,
+        border: `1px solid ${T.dropBorder}`,
+        transform: 'rotate(45deg)', borderRight: 'none', borderBottom: 'none',
+        ...arrowPos,
+      }} />
+      <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {children}
+      </div>
     </div>
   );
 };
 
-// ─── DropdownLink ─────────────────────────────────────────────────────────────
+/* ── DropdownLink ── */
 const DropdownLink = ({ label, href = '#', onClick }: DropdownLinkProps) => (
-  <Link
-    href={href}
-    onClick={onClick}
-    className="group flex items-center gap-2 py-2.5 px-2 -mx-2
-      text-[13px] font-semibold text-gray-600 hover:text-[#8B235E]
-      transition-all duration-200 tracking-wide rounded-md
-      hover:bg-[#8B235E]/[0.04]
-      focus-visible:outline-none focus-visible:text-[#8B235E]"
+  <Link href={href} onClick={onClick}
+    className="group flex items-center gap-2 py-2.5 px-2 -mx-2 rounded-lg transition-all duration-200 focus-visible:outline-none"
+    style={{ textDecoration: 'none' }}
+    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(234,88,12,0.06)')}
+    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
   >
-    <span className="w-0 h-[2px] bg-[#8B235E] rounded-full
-      transition-all duration-300 group-hover:w-3 flex-shrink-0"
-    />
-    <span className="transition-transform duration-200
-      group-hover:translate-x-0.5"
-    >
+    <span style={{
+      width: 0, height: 2, borderRadius: 2, flexShrink: 0,
+      background: `linear-gradient(90deg,${T.saffron},${T.gold})`,
+      transition: 'width 280ms ease',
+    }} className="group-hover:!w-3" />
+    <span style={{
+      fontSize: 12, fontWeight: 700, textTransform: 'uppercase',
+      letterSpacing: '0.06em', color: T.dropMuted,
+      transition: 'color 200ms',
+    }} className="group-hover:!text-orange-600">
       {label}
     </span>
   </Link>
 );
 
-// ─── MobileAccordion ──────────────────────────────────────────────────────────
+/* ── MobileAccordion ── */
 const MobileAccordion = ({ title, children }: MobileAccordionProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    if (isOpen && contentRef.current) {
+      setHeight(contentRef.current.scrollHeight);
+    } else {
+      setHeight(0);
+    }
+  }, [isOpen]);
 
   return (
-    <div className="border-b border-gray-100 last:border-0">
-      <button
-        onClick={() => setIsOpen((prev) => !prev)}
-        aria-expanded={isOpen}
-        className="flex items-center justify-between w-full py-4
-          text-left group focus-visible:outline-none
-          focus-visible:text-[#009270]"
+    <div style={{ borderBottom: '1px solid rgba(234,88,12,0.10)' }} className="last:border-0">
+      <button onClick={() => setIsOpen(p => !p)} aria-expanded={isOpen}
+        style={{ background: 'none', border: 'none', cursor: 'pointer', outline: 'none', width: '100%', padding: '14px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
       >
-        <span
-          className={`text-sm font-bold tracking-wider uppercase
-            transition-colors duration-200
-            ${isOpen ? 'text-[#009270]' : 'text-gray-800 group-hover:text-[#009270]'}`}
-        >
+        <span style={{
+          fontSize: 13, fontWeight: 800, letterSpacing: '0.10em',
+          textTransform: 'uppercase',
+          color: isOpen ? T.saffron : T.mobileText,
+          transition: 'color 200ms',
+        }}>
           {title}
         </span>
-        {/* Spring-eased chevron pill — from improved version */}
-        <div
-          className={`w-7 h-7 rounded-full flex items-center justify-center
-            transition-all duration-300
-            ease-[cubic-bezier(0.34,1.56,0.64,1)]
-            ${isOpen
-              ? 'bg-[#009270] rotate-180 shadow-[0_2px_8px_rgba(0,146,112,0.3)]'
-              : 'bg-gray-100 rotate-0 group-hover:bg-[#009270]/10'}`}
-        >
-          <ChevronDown
-            size={16}
-            aria-hidden="true"
-            className={`transition-colors duration-200
-              ${isOpen ? 'text-white' : 'text-gray-400 group-hover:text-[#009270]'}`}
-          />
+        <div style={{
+          width: 28, height: 28, borderRadius: '50%',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: isOpen ? `linear-gradient(135deg,${T.saffron},${T.gold})` : 'rgba(234,88,12,0.08)',
+          border: `1px solid ${isOpen ? 'transparent' : 'rgba(234,88,12,0.18)'}`,
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0)',
+          transition: 'all 320ms cubic-bezier(0.34,1.56,0.64,1)',
+        }}>
+          <ChevronDown size={15} aria-hidden="true"
+            style={{ color: isOpen ? '#fff' : T.saffron }} />
         </div>
       </button>
-
-      {/* scrollHeight from original — single source of truth */}
-      <div
-        ref={contentRef}
-        style={{
-          maxHeight: isOpen
-            ? `${contentRef.current?.scrollHeight ?? 500}px`
-            : '0px',
-          opacity: isOpen ? 1 : 0,
-          transform: isOpen ? 'translateY(0)' : 'translateY(-6px)',
-          transition: 'max-height 350ms cubic-bezier(0.4,0,0.2,1), opacity 250ms ease, transform 250ms ease',
-        }}
-        className="overflow-hidden"
-      >
-        <div className="pl-4 flex flex-col space-y-1
-          border-l-2 border-[#009270]/20 ml-1 pb-4"
-        >
+      <div ref={contentRef} style={{
+        overflow: 'hidden',
+        maxHeight: `${height}px`,
+        opacity: isOpen ? 1 : 0,
+        transition: 'max-height 350ms cubic-bezier(0.4,0,0.2,1), opacity 250ms ease',
+      }}>
+        <div style={{
+          paddingLeft: 16, paddingBottom: 16, marginLeft: 4,
+          borderLeft: `2px solid rgba(234,88,12,0.20)`,
+          display: 'flex', flexDirection: 'column', gap: 2,
+        }}>
           {children}
         </div>
       </div>
@@ -328,200 +277,153 @@ const MobileAccordion = ({ title, children }: MobileAccordionProps) => {
   );
 };
 
-// ─── NavItemWrapper ───────────────────────────────────────────────────────────
-const NavItemWrapper = ({
-  navKey, activeMenu, onOpen, onClose, children,
-}: NavItemWrapperProps) => {
+/* ── NavItemWrapper ── */
+const NavItemWrapper = ({ navKey, activeMenu, onOpen, onClose, children }: NavItemWrapperProps) => {
   const enterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   const handleMouseEnter = useCallback(() => {
     if (leaveTimer.current) clearTimeout(leaveTimer.current);
     enterTimer.current = setTimeout(() => onOpen(navKey), 80);
   }, [navKey, onOpen]);
-
   const handleMouseLeave = useCallback(() => {
     if (enterTimer.current) clearTimeout(enterTimer.current);
     leaveTimer.current = setTimeout(() => onClose(), 200);
   }, [onClose]);
-
-  useEffect(() => {
-    return () => {
-      if (enterTimer.current) clearTimeout(enterTimer.current);
-      if (leaveTimer.current) clearTimeout(leaveTimer.current);
-    };
+  useEffect(() => () => {
+    if (enterTimer.current) clearTimeout(enterTimer.current);
+    if (leaveTimer.current) clearTimeout(leaveTimer.current);
   }, []);
-
   return (
-    <div
-      className="relative"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       {children}
     </div>
   );
 };
 
-// ─── Header ───────────────────────────────────────────────────────────────────
+/* ══════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════ */
 const Header = () => {
-  const [activeMenu, setActiveMenu]         = useState<string | null>(null);
+  const [activeMenu, setActiveMenu]             = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled]         = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isScrolled, setIsScrolled]             = useState(false);
+  const [scrollProgress, setScrollProgress]     = useState(0);
+const [showSupportModal, setShowSupportModal] = useState(false);
+const handleOpenSupport = () => setShowSupportModal(true);
+const handleCloseSupport = () => setShowSupportModal(false);
   const headerRef = useRef<HTMLDivElement>(null);
 
-  // ── Scroll listener — window guarded for SSR safety ──
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const onScroll = () => {
-      const y = window.scrollY;
-      setIsScrolled(y > 8);
-      setScrollProgress(Math.min(y / 120, 1));
+      setIsScrolled(window.scrollY > 8);
+      setScrollProgress(Math.min(window.scrollY / 120, 1));
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // ── Click outside ──
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (headerRef.current &&
-        !headerRef.current.contains(event.target as Node)) {
+    const fn = (e: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node))
         setActiveMenu(null);
-      }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', fn);
+    return () => document.removeEventListener('mousedown', fn);
   }, []);
 
-  // ── ESC key ──
   useEffect(() => {
-    const handleEsc = (e: globalThis.KeyboardEvent) => {
-      if (e.key === 'Escape') setActiveMenu(null);
-    };
-    document.addEventListener('keydown', handleEsc);
-    return () => document.removeEventListener('keydown', handleEsc);
+    const fn = (e: KeyboardEvent) => { if (e.key === 'Escape') setActiveMenu(null); };
+    document.addEventListener('keydown', fn);
+    return () => document.removeEventListener('keydown', fn);
   }, []);
 
-  // ── Body scroll lock ──
   useEffect(() => {
-    if (typeof document === 'undefined') return;
     document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isMobileMenuOpen]);
 
-  const openMenu    = useCallback((key: string) => setActiveMenu(key), []);
-  const closeMenu   = useCallback(() => setActiveMenu(null), []);
-  const toggleMenu  = useCallback((key: string) => {
-    setActiveMenu((prev) => (prev === key ? null : key));
-  }, []);
+const openMenu   = useCallback((k: string) => setActiveMenu(k), []);
+const closeMenu  = useCallback(() => setActiveMenu(null), []);
+
+useEffect(() => {
+  const fn = () => setShowSupportModal(true);
+  window.addEventListener('openSupportModal', fn);
+  return () => window.removeEventListener('openSupportModal', fn);
+}, []);
+  const toggleMenu = useCallback((k: string) => setActiveMenu(p => p === k ? null : k), []);
   const closeMobile = useCallback(() => setIsMobileMenuOpen(false), []);
 
   return (
     <>
-      <header
-        ref={headerRef}
-        role="banner"
-        className={`w-full bg-white/95 backdrop-blur-md py-3 md:py-4
-          px-4 md:px-6 fixed top-0 left-0 z-[999] transition-all
-          duration-300 border-b border-gray-100
-          ${isScrolled
-            ? 'shadow-[0_4px_24px_-4px_rgba(0,0,0,0.10)] border-gray-100'
-            : 'shadow-none border-transparent'}`}
+      <header ref={headerRef} role="banner"
+        className="w-full fixed top-0 left-0 z-[999] transition-all duration-300"
+        style={{
+          background: '#ffffff',
+          borderBottom: isScrolled
+            ? `1px solid rgba(234,88,12,0.15)`
+            : `1px solid rgba(234,88,12,0.08)`,
+          boxShadow: isScrolled
+            ? '0 4px 24px rgba(120,40,0,0.10)'
+            : '0 1px 8px rgba(120,40,0,0.05)',
+          padding: '11px 24px',
+        }}
       >
-        {/* Scroll-progress bar — SSR safe: starts at 0 */}
-        <div
-          aria-hidden="true"
-          className="absolute top-0 left-0 h-[2.5px] rounded-r-full
-            bg-gradient-to-r from-[#8B235E] via-[#d4427a] to-[#009270]
-            transition-[width] duration-150 ease-out pointer-events-none"
-          style={{ width: `${scrollProgress * 100}%` }}
-        />
+        {/* scroll progress */}
+        <div aria-hidden style={{
+          position: 'absolute', top: 0, left: 0, height: 3, borderRadius: '0 3px 3px 0',
+          background: `linear-gradient(90deg,${T.saffron},${T.goldLight},${T.gold})`,
+          width: `${scrollProgress * 100}%`,
+          transition: 'width 150ms linear',
+          pointerEvents: 'none',
+        }} />
 
-        <div className="max-w-7xl mx-auto flex items-center
-          justify-between gap-4"
-        >
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 relative">
+
           {/* ── Logo ── */}
-          <Link
-            href="/"
-            aria-label="ChildSave — Home"
-            className="flex items-center space-x-3 flex-shrink-0 group"
+          <Link href="/"
+            aria-label="Uthamar Thiru Kovil Arrakattalai Makkal Sevai Margam"
+            className="flex items-center gap-3 flex-shrink-0 group"
+            style={{ textDecoration: 'none' }}
           >
-            <div
-              className="relative w-10 h-10 md:w-12 md:h-12 flex
-                items-center justify-center bg-[#8B235E] rounded-xl
-                shadow-lg
-                group-hover:shadow-[#8B235E]/30
-                group-hover:-rotate-2 group-hover:scale-105
-                transition-all duration-300
-                ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-            >
-              <ShieldCheck
-                className="text-white absolute w-6 h-6 md:w-8 md:h-8"
-                strokeWidth={1.5} aria-hidden="true"
-              />
-              <Heart
-                className="text-[#FFCC29] w-2 h-2 md:w-3 md:h-3
-                  absolute bottom-1.5 right-1.5 md:bottom-2 md:right-2
-                  fill-[#FFCC29] animate-pulse"
-                aria-hidden="true"
-              />
+            <div style={{
+              width: 46, height: 46, borderRadius: 12,
+              background: 'rgba(234,88,12,0.08)',
+              border: '1.5px solid rgba(234,88,12,0.20)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transition: 'transform 300ms cubic-bezier(0.34,1.56,0.64,1), background 200ms',
+            }} className="group-hover:scale-105 group-hover:-rotate-2 group-hover:!bg-[rgba(234,88,12,0.14)]">
+              <DiyaIcon size={30} />
             </div>
-            <div className="leading-tight">
-              <p className="text-[#8B235E] font-extrabold text-lg
-                md:text-2xl tracking-tighter uppercase italic"
-              >
-                Child<span className="text-[#009270]">Save</span>
+            <div style={{ lineHeight: 1.25 }}>
+              <p style={{ fontWeight: 900, fontSize: 15, letterSpacing: '-0.02em', textTransform: 'uppercase', margin: 0 }}>
+                <span style={{ color: '#1c0a00' }}>Uthamar Thiru Kovil </span>
+                <span style={{ color: T.saffron }}>Arrakattalai</span>
               </p>
-              <p className="text-[8px] md:text-[10px] text-gray-500
-                font-bold tracking-[0.25em] uppercase -mt-1"
-              >
-                Protecting Futures
+              <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.15em', textTransform: 'uppercase', color: T.gold, margin: 0 }}>
+                Makkal Sevai Margam
               </p>
             </div>
           </Link>
 
           {/* ── Desktop Nav ── */}
-          <nav
-            aria-label="Main navigation"
-            className="hidden xl:flex items-center space-x-8 2xl:space-x-10"
-          >
+          <nav aria-label="Main navigation" className="hidden xl:flex items-center gap-7 2xl:gap-9">
             {NAV_ITEMS.map((item) => (
-              <NavItemWrapper
-                key={item.key}
-                navKey={item.key}
-                activeMenu={activeMenu}
-                onOpen={openMenu}
-                onClose={closeMenu}
-              >
+              <NavItemWrapper key={item.key} navKey={item.key}
+                activeMenu={activeMenu} onOpen={openMenu} onClose={closeMenu}>
                 <NavTrigger
                   id={`nav-btn-${item.key}`}
                   controlsId={`nav-menu-${item.key}`}
-                  topText={item.topText}
-                  bottomText={item.bottomText}
+                  topText={item.topText} bottomText={item.bottomText}
                   isOpen={activeMenu === item.key}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleMenu(item.key);
-                  }}
+                  onClick={(e) => { e.stopPropagation(); toggleMenu(item.key); }}
                 />
                 {activeMenu === item.key && (
-                  <DropdownContainer
-                    id={`nav-menu-${item.key}`}
-                    isOpen={activeMenu === item.key}
-                  >
-                    {item.columns.map((col, colIdx) => (
-                      <div key={colIdx} className="space-y-0.5">
-                        {col.map((link) => (
-                          <DropdownLink
-                            key={link.href + link.label}
-                            label={link.label}
-                            href={link.href}
-                            onClick={closeMenu}
-                          />
-                        ))}
-                      </div>
+                  <DropdownContainer id={`nav-menu-${item.key}`}
+                    isOpen={activeMenu === item.key} align={item.align}>
+                    {item.links.map((link) => (
+                      <DropdownLink key={link.href}
+                        label={link.label} href={link.href} onClick={closeMenu} />
                     ))}
                   </DropdownContainer>
                 )}
@@ -530,197 +432,184 @@ const Header = () => {
           </nav>
 
           {/* ── Right Actions ── */}
-          <div className="flex items-center space-x-2 md:space-x-3
-            flex-shrink-0"
-          >
-            <button
-              aria-label="Search"
-              className="p-2 text-gray-500 hover:text-[#8B235E]
-                hover:bg-[#8B235E]/[0.07] rounded-full transition-all
-                duration-200 hidden sm:flex items-center justify-center
-                active:scale-90
-                focus-visible:ring-2 focus-visible:ring-[#8B235E]
-                focus-visible:ring-offset-2 group"
+          <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+            <button aria-label="Search"
+              className="hidden sm:flex p-2 rounded-full items-center justify-center transition-all duration-200 active:scale-90"
+              style={{ color: T.navSubtle, background: 'transparent', border: 'none', cursor: 'pointer' }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.background = 'rgba(234,88,12,0.08)';
+                (e.currentTarget as HTMLElement).style.color = T.saffron;
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.background = 'transparent';
+                (e.currentTarget as HTMLElement).style.color = T.navSubtle;
+              }}
             >
-              <Search
-                size={20} strokeWidth={2.5} aria-hidden="true"
-                className="transition-transform duration-200
-                  group-hover:scale-110"
-              />
+              <Search size={19} strokeWidth={2.5} aria-hidden="true" />
             </button>
 
-            <Link
-              href="/donate"
-              className="relative overflow-hidden bg-[#8B235E] text-white
-                px-4 md:px-5 py-2.5 rounded-lg font-bold
-                text-xs md:text-sm uppercase tracking-wider
-                transition-all duration-300 active:scale-95
-                shadow-[0_2px_10px_rgba(139,35,94,0.25)]
-                hover:shadow-[0_4px_18px_rgba(139,35,94,0.4)]
-                hover:-translate-y-0.5 group"
+            <Link href="/donate"
+              className="flex items-center gap-1.5 active:scale-95 hover:-translate-y-0.5"
+              style={{
+                padding: '10px 20px', borderRadius: 10, fontWeight: 800,
+                fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.07em',
+                color: '#ffffff', textDecoration: 'none',
+                background: `linear-gradient(135deg,${T.saffron},${T.saffronDeep})`,
+                boxShadow: '0 2px 12px rgba(234,88,12,0.35)',
+                transition: 'transform 250ms, box-shadow 250ms',
+              }}
+              onMouseEnter={e => ((e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(234,88,12,0.55)')}
+              onMouseLeave={e => ((e.currentTarget as HTMLElement).style.boxShadow = '0 2px 12px rgba(234,88,12,0.35)')}
             >
-              <span className="relative z-10">Give</span>
-              <div className="absolute inset-0 bg-[#6b1b48] opacity-0
-                group-hover:opacity-100 transition-opacity duration-300"
-              />
-            </Link>
-
-            <Link
-              href="/sponsor-a-child"
-              className="hidden md:inline-flex relative overflow-hidden
-                bg-[#009270] text-white px-5 py-2.5 rounded-lg
-                font-bold text-sm uppercase tracking-wider
-                transition-all duration-300 active:scale-95
-                shadow-[0_2px_10px_rgba(0,146,112,0.25)]
-                hover:shadow-[0_4px_18px_rgba(0,146,112,0.4)]
-                hover:-translate-y-0.5 group"
-            >
-              <span className="relative z-10">Sponsor</span>
-              <div className="absolute inset-0 bg-[#007a5d] opacity-0
-                group-hover:opacity-100 transition-opacity duration-300"
-              />
+              <Heart size={13} style={{ fill: '#ffffff' }} aria-hidden="true" />
+              Give
             </Link>
 
             <button
-              onClick={() => setIsMobileMenuOpen(true)}
+  onClick={handleOpenSupport}
+  className="hidden md:inline-flex items-center active:scale-95 hover:-translate-y-0.5"
+  style={{
+    padding: '10px 18px', borderRadius: 10, fontWeight: 800,
+    fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.07em',
+    color: T.saffron, cursor: 'pointer',
+    border: `1.5px solid rgba(234,88,12,0.35)`,
+    background: 'transparent',
+    transition: 'transform 250ms, background 200ms, border-color 200ms',
+  }}
+  onMouseEnter={e => {
+    (e.currentTarget as HTMLElement).style.background = 'rgba(234,88,12,0.06)';
+    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(234,88,12,0.60)';
+  }}
+  onMouseLeave={e => {
+    (e.currentTarget as HTMLElement).style.background = 'transparent';
+    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(234,88,12,0.35)';
+  }}
+>
+  Support Us
+</button>
+
+            <button onClick={() => setIsMobileMenuOpen(true)}
               aria-label="Open navigation menu"
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-drawer"
-              className="xl:hidden p-2 text-gray-600 hover:bg-gray-100
-                hover:text-[#8B235E] rounded-lg transition-all
-                duration-200 active:scale-90"
+              className="xl:hidden p-2 rounded-lg transition-all duration-200 active:scale-90"
+              style={{ color: T.navMuted, background: 'none', border: 'none', cursor: 'pointer' }}
             >
-              <Menu size={26} aria-hidden="true" />
+              <Menu size={25} aria-hidden="true" />
             </button>
           </div>
         </div>
       </header>
 
-      {/* ── Mobile Drawer ── */}
-      <div
-        id="mobile-drawer"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Navigation menu"
-        className={`fixed inset-0 z-[9999] xl:hidden transition-all
-          duration-300
-          ${isMobileMenuOpen ? 'visible' : 'invisible pointer-events-none'}`}
+      {/* ══════════ MOBILE DRAWER ══════════ */}
+      <div id="mobile-drawer" role="dialog" aria-modal="true" aria-label="Navigation menu"
+        className="fixed inset-0 xl:hidden"
+        style={{
+          zIndex: 9999,
+          visibility: isMobileMenuOpen ? 'visible' : 'hidden',
+          pointerEvents: isMobileMenuOpen ? 'auto' : 'none',
+        }}
       >
-        {/* Backdrop */}
-        <div
-          aria-hidden="true"
-          onClick={closeMobile}
-          className={`absolute inset-0 bg-black/60 backdrop-blur-sm
-            transition-opacity duration-300
-            ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`}
-        />
+        <div aria-hidden onClick={closeMobile} style={{
+          position: 'absolute', inset: 0,
+          background: 'rgba(28,10,0,0.50)',
+          opacity: isMobileMenuOpen ? 1 : 0,
+          transition: 'opacity 300ms ease',
+        }} />
 
-        {/* Drawer panel — spring easing from improved version */}
-        <div
-          style={{
-            transition: 'transform 480ms cubic-bezier(0.32,0.72,0,1)',
-          }}
-          className={`absolute top-0 right-0 h-full w-[85%]
-            sm:w-[380px] bg-white
-            shadow-[-16px_0_48px_rgba(0,0,0,0.12)]
-            flex flex-col
-            ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}
-        >
-          {/* Brand gradient bar */}
-          <div aria-hidden="true" className="h-[3px] w-full flex-shrink-0
-            bg-gradient-to-r from-[#8B235E] via-[#d4427a] to-[#009270]"
-          />
+        <div style={{
+          position: 'absolute', top: 0, right: 0, bottom: 0,
+          width: '85%', maxWidth: 380,
+          background: T.mobileBg,
+          borderLeft: `1px solid rgba(234,88,12,0.12)`,
+          boxShadow: '-16px 0 48px rgba(120,40,0,0.15)',
+          display: 'flex', flexDirection: 'column',
+          transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(100%)',
+          transition: 'transform 460ms cubic-bezier(0.32,0.72,0,1)',
+        }}>
+          <div aria-hidden style={{
+            height: 3, flexShrink: 0,
+            background: `linear-gradient(90deg,${T.saffron},${T.goldLight},${T.gold})`,
+          }} />
 
-          {/* Drawer header */}
-          <div className="p-5 border-b flex items-center justify-between
-            bg-gray-50/50 flex-shrink-0"
-          >
-            <Link
-              href="/"
-              onClick={closeMobile}
-              className="flex items-center space-x-2 group"
-            >
-              <div className="w-8 h-8 flex items-center justify-center
-                bg-[#8B235E] rounded-lg shadow-md
-                group-hover:-rotate-2 transition-all duration-300
-                ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-              >
-                <ShieldCheck
-                  className="text-white w-5 h-5"
-                  strokeWidth={1.5} aria-hidden="true"
-                />
+          <div style={{
+            padding: '16px 20px', display: 'flex', alignItems: 'center',
+            justifyContent: 'space-between', flexShrink: 0,
+            borderBottom: `1px solid rgba(234,88,12,0.10)`,
+          }}>
+            <Link href="/" onClick={closeMobile}
+              style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: 10,
+                background: 'rgba(234,88,12,0.08)',
+                border: '1.5px solid rgba(234,88,12,0.20)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <DiyaIcon size={22} />
               </div>
-              <span className="font-extrabold text-[#8B235E] italic
-                text-base uppercase tracking-tighter"
-              >
-                Child<span className="text-[#009270]">Save</span>
-              </span>
+              <div>
+                <p style={{ fontWeight: 900, fontSize: 12, textTransform: 'uppercase', letterSpacing: '-0.01em', margin: 0 }}>
+                  <span style={{ color: '#1c0a00' }}>Uthamar Thiru Kovil </span>
+                  <span style={{ color: T.saffron }}>Arrakattalai</span>
+                </p>
+                <p style={{ fontSize: 8, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: T.gold, margin: 0 }}>
+                  Makkal Sevai Margam
+                </p>
+              </div>
             </Link>
-            <button
-              onClick={closeMobile}
-              aria-label="Close navigation menu"
-              className="p-2 hover:bg-gray-200 hover:text-[#8B235E]
-                rounded-full transition-all duration-200 active:scale-90"
-            >
-              <X size={22} className="text-gray-700" aria-hidden="true" />
+            <button onClick={closeMobile} aria-label="Close navigation menu"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8, borderRadius: '50%', color: T.navMuted }}>
+              <X size={21} aria-hidden="true" />
             </button>
           </div>
 
-          {/* Nav items */}
-          <div
-            role="navigation"
-            aria-label="Mobile navigation"
-            className="flex-1 overflow-y-auto px-5 py-3 space-y-1"
-          >
+          <div role="navigation" aria-label="Mobile navigation"
+            style={{ flex: 1, overflowY: 'auto', padding: '8px 20px' }}>
             {NAV_ITEMS.map((item) => (
-              <MobileAccordion
-                key={item.key}
-                title={`${item.topText} ${item.bottomText}`}
-              >
-                {item.columns.flat().map((link) => (
-                  <DropdownLink
-                    key={link.href + link.label}
-                    label={link.label}
-                    href={link.href}
-                    onClick={closeMobile}
-                  />
+              <MobileAccordion key={item.key} title={`${item.topText} ${item.bottomText}`}>
+                {item.links.map((link) => (
+                  <DropdownLink key={link.href}
+                    label={link.label} href={link.href} onClick={closeMobile} />
                 ))}
               </MobileAccordion>
             ))}
           </div>
 
-          {/* CTA buttons */}
-          <div className="p-5 border-t bg-gray-50 flex flex-col
-            gap-3 flex-shrink-0"
-          >
-            <Link
-              href="/sponsor-a-child"
-              onClick={closeMobile}
-              className="w-full bg-[#009270] text-white py-3.5
-                rounded-xl font-bold text-center uppercase text-sm
-                shadow-[0_2px_10px_rgba(0,146,112,0.3)]
-                hover:shadow-[0_4px_16px_rgba(0,146,112,0.4)]
-                hover:-translate-y-0.5 active:scale-95
-                transition-all duration-300 tracking-wider"
-            >
-              Sponsor a Child
-            </Link>
-            <Link
-              href="/donate"
-              onClick={closeMobile}
-              className="w-full bg-[#8B235E] text-white py-3 rounded-xl
-                font-bold text-center uppercase text-sm
-                shadow-[0_2px_10px_rgba(139,35,94,0.25)]
-                hover:shadow-[0_4px_16px_rgba(139,35,94,0.35)]
-                hover:-translate-y-0.5 active:scale-95
-                transition-all duration-300 tracking-wider"
-            >
+          <div style={{
+            padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12,
+            flexShrink: 0, borderTop: `1px solid rgba(234,88,12,0.10)`,
+          }}>
+            <Link href="/donate" onClick={closeMobile}
+              className="active:scale-95 hover:-translate-y-0.5"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                padding: '14px', borderRadius: 14, fontWeight: 800,
+                fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.08em',
+                color: '#ffffff', textDecoration: 'none',
+                background: `linear-gradient(135deg,${T.saffron},${T.saffronDeep})`,
+                boxShadow: '0 2px 12px rgba(234,88,12,0.30)',
+                transition: 'transform 250ms',
+              }}>
+              <Heart size={15} style={{ fill: '#ffffff' }} aria-hidden="true" />
               Give Now
             </Link>
+           <button onClick={() => { handleOpenSupport(); closeMobile(); }}
+  className="active:scale-95 hover:-translate-y-0.5"
+  style={{
+    display: 'block', textAlign: 'center', width: '100%',
+    padding: '13px', borderRadius: 14, fontWeight: 800,
+    fontSize: 13, textTransform: 'uppercase', letterSpacing: '0.08em',
+    color: T.saffron, cursor: 'pointer',
+    border: `1.5px solid rgba(234,88,12,0.30)`,
+    background: 'rgba(234,88,12,0.05)',
+    transition: 'transform 250ms',
+  }}>
+  Support Us
+</button>
           </div>
         </div>
       </div>
-    </>
+<SupportModal key={showSupportModal ? 'open' : 'closed'} isOpen={showSupportModal} onClose={handleCloseSupport} />    </>
   );
 };
 

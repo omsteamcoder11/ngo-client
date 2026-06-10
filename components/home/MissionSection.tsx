@@ -1,104 +1,121 @@
 "use client";
 
 import React, { useRef } from "react";
-import { ChevronRight } from "lucide-react";
+import { Heart, Users } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 
-const MissionSection = () => {
+const AboutMissionSection = () => {
   const ref = useRef(null);
-
-  // 🔥 Detect every time it enters viewport
-  const isInView = useInView(ref, {
-    margin: "-100px",
-    once: false,
-  });
+  const isInView = useInView(ref, { margin: "-100px", once: false });
 
   return (
     <section
       ref={ref}
-      className="w-full bg-[#eaf6ff] py-16 px-6 overflow-hidden"
+      className="w-full py-20 px-5"
+      style={{ background: "#fdf6f0" }}
     >
-      <div className="max-w-7xl mx-auto">
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div className="grid lg:grid-cols-2 gap-14 items-center">
 
-        {/* HEADING */}
-        <motion.h2
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-          transition={{ duration: 0.7 }}
-          className="text-3xl md:text-4xl font-bold text-[#4a4a4a] text-center mb-12 tracking-tight"
-        >
-          You can help protect futures — starting with ChildSave
-        </motion.h2>
-
-        <div className="flex flex-col md:flex-row items-stretch gap-12">
-
-          {/* LEFT SIDE */}
+          {/* LEFT — Single clean image */}
           <motion.div
-            initial={{ opacity: 0, x: -80 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -80 }}
-            transition={{ duration: 0.8 }}
-            className="flex-1 space-y-8"
+            initial={{ opacity: 0, x: -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+            transition={{ duration: 0.6 }}
           >
-            <p className="text-lg text-gray-600 leading-relaxed font-light">
-              Every child deserves the chance to grow up safe and healthy. With support from 
-              dedicated individuals like you, young people in our programs can escape the cycle 
-              of hardship. Together, we can provide the resources, protection, and education 
-              needed to build confidence and shape a brighter future for entire communities.
-            </p>
-
-            <div className="flex flex-wrap items-center gap-6 pt-4">
-              <button className="bg-[#009270] text-white px-8 py-3 rounded-md font-bold text-sm uppercase tracking-wider hover:bg-[#007a5d] transition-all shadow-md hover:scale-105">
-                Sponsor a Child
-              </button>
-
-              <Link
-                href="/how-sponsorship-works"
-                className="flex items-center text-[#009270] font-bold text-sm uppercase tracking-wider group"
-              >
-                See how childsave works
-                <ChevronRight
-                  size={18}
-                  className="ml-1 group-hover:translate-x-1 transition-transform"
-                />
-              </Link>
+            <div
+              className="relative rounded-2xl overflow-hidden"
+              style={{ height: 400 }}
+            >
+              <Image
+               src="/images/about-seva.webp"
+                alt="Community service"
+                fill
+                className="object-cover"
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(to top, rgba(180,50,0,0.4) 0%, transparent 55%)",
+                }}
+              />
             </div>
           </motion.div>
 
-          {/* Divider */}
-          <div className="hidden md:block w-[1px] bg-gray-300"></div>
-
-          {/* RIGHT SIDE */}
+          {/* RIGHT — Text */}
           <motion.div
-            initial={{ opacity: 0, x: 80 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 80 }}
-            transition={{ duration: 0.8 }}
-            className="flex-1 flex flex-col justify-between py-2"
+            initial={{ opacity: 0, x: 20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="space-y-5"
           >
-            <div className="space-y-4">
-              <p className="text-[#8B235E] text-xl italic font-medium leading-relaxed">
-                "It is a privilege to stand with ChildSave. Seeing the direct impact on 
-                a child&apos;s life is truly rewarding, and their team makes it so easy to help."
-              </p>
+            {/* Small label */}
+            <p
+              className="text-xs font-bold uppercase tracking-widest"
+              style={{ color: "#d94f00" }}
+            >
+              About Us
+            </p>
 
-              <div className="pt-4">
-                <p className="text-[#8B235E] font-bold text-lg">— Sarah J.,</p>
-                <p className="text-[#8B235E] text-sm font-semibold uppercase tracking-widest">
-                  Supporter since 2015
-                </p>
-              </div>
-            </div>
+            {/* Heading */}
+            <h2
+              className="text-2xl md:text-3xl font-semibold leading-snug"
+              style={{ color: "#1a1a1a", fontFamily: "Georgia, serif" }}
+            >
+              We are a temple-rooted NGO <br />
+              serving Tamil Nadu since 2010.
+            </h2>
 
-            <div className="mt-8 pt-8 md:mt-0">
+            {/* Body */}
+            <p className="text-sm leading-relaxed" style={{ color: "#666" }}>
+              Makal Sevai Margam is the social service wing of{" "}
+              <span style={{ color: "#1a1a1a", fontWeight: 600 }}>
+                Uthamar Thiru Kovil, Arrakattalai.
+              </span>{" "}
+              We believe that serving people is the truest form of devotion to God.
+            </p>
+
+            <p className="text-sm leading-relaxed" style={{ color: "#666" }}>
+              Over the years we have quietly built homes for the homeless, served
+              daily meals to the hungry, and funded the education of children who
+              had no one else to look after them.
+            </p>
+
+            {/* Small quote */}
+            <p
+              className="text-sm italic leading-relaxed pl-4"
+              style={{
+                color: "#888",
+                borderLeft: "3px solid #f4c4a8",
+              }}
+            >
+              "We serve because the divine lives in every person we help."
+            </p>
+
+            {/* CTAs */}
+            <div className="flex flex-wrap gap-3 pt-1">
               <Link
-                href="/what-people-say"
-                className="flex items-center text-[#009270] font-bold text-sm uppercase tracking-wider group"
+                href="/donate"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold text-sm transition-all hover:opacity-90"
+                style={{ background: "#d94f00" }}
               >
-                More from our supporters
-                <ChevronRight
-                  size={18}
-                  className="ml-1 group-hover:translate-x-1 transition-transform"
-                />
+                <Heart className="w-3.5 h-3.5 fill-white" />
+                Donate Now
+              </Link>
+              <Link
+                href="/volunteer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all hover:bg-orange-50"
+                style={{
+                  border: "1.5px solid #d94f00",
+                  color: "#d94f00",
+                  background: "transparent",
+                }}
+              >
+                <Users className="w-3.5 h-3.5" />
+                Volunteer
               </Link>
             </div>
           </motion.div>
@@ -109,7 +126,4 @@ const MissionSection = () => {
   );
 };
 
-export default MissionSection;
-
-
-
+export default AboutMissionSection;

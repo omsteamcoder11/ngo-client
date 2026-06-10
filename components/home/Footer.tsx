@@ -1,225 +1,222 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
-import { ShieldCheck, Heart, Mail, Phone, MapPin } from 'lucide-react';
+import { Heart, Mail, Phone, MapPin } from 'lucide-react';
+
+/* ── Diya SVG (same as Header) ── */
+const DiyaIcon = ({ size = 32 }) => (
+  <svg width={size} height={size} viewBox="0 0 40 40" fill="none"
+    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <ellipse cx="20" cy="10" rx="3" ry="5" fill="#FCD34D" opacity="0.9" />
+    <ellipse cx="20" cy="11" rx="1.8" ry="3.5" fill="#F97316" />
+    <ellipse cx="20" cy="12.5" rx="1" ry="2" fill="#FEF3C7" />
+    <rect x="19.3" y="14" width="1.4" height="3" rx="0.7" fill="#92400E" />
+    <path d="M10 20 Q10 17 20 17 Q30 17 30 20 L28 28 Q28 30 20 30 Q12 30 12 28 Z" fill="#F59E0B" />
+    <path d="M12 21 Q12 19 20 19 Q28 19 28 21 L26.5 27 Q26.5 28.5 20 28.5 Q13.5 28.5 13.5 27 Z" fill="#FCD34D" />
+    <path d="M28 21 Q33 20 34 22 Q33 25 28 24" fill="#F59E0B" stroke="#D97706" strokeWidth="0.5" />
+    <rect x="13" y="29" width="14" height="3" rx="1.5" fill="#D97706" />
+    <rect x="15" y="31" width="10" height="2" rx="1" fill="#92400E" />
+    <circle cx="20" cy="7" r="1.2" fill="#FEF9C3" opacity="0.8" />
+  </svg>
+);
+
+/* ── Theme tokens (mirrors Header) ── */
+const T = {
+  saffron:      '#ea580c',
+  saffronDeep:  '#c2410c',
+  gold:         '#d97706',
+  goldLight:    '#fbbf24',
+  navText:      '#1c0a00',
+  navSubtle:    'rgba(146,64,14,0.45)',
+  navMuted:     '#92400e',
+  footerBg:     '#fdf6f0',
+  border:       '#edd9c8',
+};
+
+/* ── Nav items from Header — kept identical ── */
 const NAV_ITEMS = [
   {
-    key: 'learn',
-    topText: 'LEARN',
-    bottomText: 'ABOUT US',
-    columns: [
-      [
-        { label: 'Accountability', href: '/accountability' },
-        { label: 'Contact Us', href: '/contact' },
-        { label: 'FAQs', href: '/faqs' },
-        { label: 'Our Mission & Vision', href: '/mission' },
-        { label: 'Our Leadership', href: '/leadership' },
-      ],
-      [
-        { label: 'Newsroom & Resources', href: '/news' },
-        { label: 'Strategic Partners', href: '/partner' },
-        { label: 'Careers', href: '/careers' },
-        { label: 'Global Philanthropy', href: '/global' },
-      ],
+    key: 'about', topText: 'LEARN', bottomText: 'ABOUT US',
+    links: [
+      { label: 'Mission & Vision', href: '/mission' },
+      { label: 'Contact Us',       href: '/contact' },
     ],
   },
   {
-    key: 'difference',
-    topText: 'MAKE A',
-    bottomText: 'DIFFERENCE',
-    columns: [
-      [
-        { label: 'Sponsor a Child', href: '/sponsor-a-child' },
-        { label: 'Donate', href: '/donate' },
-        { label: 'Other Ways to Help', href: '/help' },
-      ],
-      [
-        { label: 'Ways to Donate', href: '/donate' },
-        { label: 'Gift Planning', href: '/gift' },
-        { label: 'Employer Matching', href: '/employer' },
-      ],
+    key: 'services', topText: 'OUR', bottomText: 'ACTIVITY',
+    links: [
+      { label: 'Temple Construction',     href: '/services/construction' },
+      { label: 'Annadhanam (Free Meals)', href: '/services/annadhanam' },
+      { label: 'Education Aid',           href: '/services/education' },
+      { label: 'All Seva Programs',       href: '/programs' },
     ],
   },
   {
-    key: 'impact',
-    topText: 'SEE OUR',
-    bottomText: 'IMPACT',
-    columns: [
-      [
-        { label: 'Our Programs', href: '/programs' },
-        { label: 'Where We Work', href: '/work' },
-        { label: 'How Sponsorship Works', href: '/sponsers' },
-      ],
-      [
-        { label: 'Our Stories', href: '/stories' },
-        { label: 'Why Choose Us', href: '/why-us' },
-      ],
+    key: 'impact', topText: 'SEE OUR', bottomText: 'IMPACT',
+    links: [
+      { label: 'Gallery & Media', href: '/gallery' },
+      { label: 'Testimonials',    href: '/testimonials' },
     ],
   },
   {
-    key: 'employment',
-    topText: 'INTO EMPLOYMENT',
-    bottomText: 'PROGRAM',
-    columns: [
-      [
-        { label: 'About Into Employment', href: '/employment' },
-        { label: 'Impact', href: '/impact' },
-      ],
-      [
-        { label: 'Journey', href: '/journey' },
-        { label: 'Donate', href: '/donate' },
-      ],
-    ],
-  },
-  {
-    key: 'activity',
-    topText: 'OUR',
-    bottomText: 'ACTIVITY',
-    columns: [
-      [
-        { label: 'Testimonials', href: '/testimonials' },
-        { label: 'Volunteer With Us', href: '/volunteer' },
-        { label: 'Awareness Programs', href: '/awareness' },
-      ],
-      [
-        { label: 'Campaigns', href: '/campaigns' },
-        // { label: 'Field Updates', href: '/field-updates' },
-        { label: 'Media & Gallery', href: '/gallery' },
-      ],
+    key: 'donate', topText: 'MAKE A', bottomText: 'DIFFERENCE',
+    links: [
+      { label: 'Donate Now',              href: '/donate' },
+      { label: 'Sponsor a Seva',          href: '/sponsor-form' },
+      { label: 'Fund Temple Construction', href: '/donate' },
+      { label: 'Volunteer With Us',       href: '/volunteer' },
     ],
   },
 ];
 
 const SOCIAL_LINKS = [
-  {
-    label: 'Facebook',
-    href: '#',
-    svg: (
-      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-      </svg>
-    ),
-  },
-  {
-    label: 'Twitter',
-    href: '#',
-    svg: (
-      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
-      </svg>
-    ),
-  },
-  {
-    label: 'Instagram',
-    href: '#',
-    svg: (
-      <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-        <circle cx="12" cy="12" r="4"/>
-        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-      </svg>
-    ),
-  },
-  {
-    label: 'LinkedIn',
-    href: '#',
-    svg: (
-      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/>
-        <circle cx="4" cy="4" r="2"/>
-      </svg>
-    ),
-  },
+  { icon: '📘', label: 'Facebook',  href: 'https://facebook.com' },
+  { icon: '🐦', label: 'Twitter',   href: 'https://twitter.com' },
+  { icon: '📷', label: 'Instagram', href: 'https://instagram.com' },
+  { icon: '▶️',  label: 'YouTube',  href: 'https://youtube.com' },
 ];
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-[#0f0f0f] text-white">
+    <footer className="w-full" style={{ background: T.footerBg }}>
 
+      {/* Top gradient accent — matches Header scroll bar */}
+      <div style={{
+        height: 3,
+        background: `linear-gradient(90deg,${T.saffron},${T.goldLight},${T.gold})`,
+      }} />
 
-      {/* ── MAIN FOOTER ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-12 lg:gap-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-12 lg:gap-16">
 
           {/* ── LEFT: Brand + Contact + Social ── */}
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-6">
 
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-3 group w-fit">
-              <div className="relative w-12 h-12 flex items-center justify-center bg-[#8B235E]">
-                <ShieldCheck className="text-white w-7 h-7" strokeWidth={1.5} />
-                <Heart className="text-[#FFCC29] w-3 h-3 absolute bottom-2 right-2 fill-[#FFCC29] animate-pulse" />
+            {/* Logo — identical markup to Header */}
+            <Link href="/"
+              aria-label="Uthamar Thiru Kovil Arrakattalai Makkal Sevai Margam"
+              className="flex items-center gap-3 group w-fit"
+              style={{ textDecoration: 'none' }}
+            >
+              <div style={{
+                width: 46, height: 46, borderRadius: 12,
+                background: 'rgba(234,88,12,0.08)',
+                border: '1.5px solid rgba(234,88,12,0.20)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'transform 300ms cubic-bezier(0.34,1.56,0.64,1), background 200ms',
+              }} className="group-hover:scale-105 group-hover:-rotate-2">
+                <DiyaIcon size={30} />
               </div>
-              <div className="leading-tight">
-                <p className="text-[#f0a0cc] font-extrabold text-2xl tracking-tighter uppercase italic">
-                  Child<span className="text-[#00c99a]">Save</span>
+              <div style={{ lineHeight: 1.25 }}>
+                <p style={{ fontWeight: 900, fontSize: 15, letterSpacing: '-0.02em', textTransform: 'uppercase', margin: 0 }}>
+                  <span style={{ color: T.navText }}>Uthamar Thiru Kovil </span>
+                  <span style={{ color: T.saffron }}>Arrakattalai</span>
                 </p>
-                <p className="text-[10px] text-gray-400 font-bold tracking-[0.25em] uppercase -mt-1">
-                  Protecting Futures
+                <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.15em', textTransform: 'uppercase', color: T.gold, margin: 0 }}>
+                  Makkal Sevai Margam
                 </p>
               </div>
             </Link>
 
-            {/* Description */}
-            <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-              ChildSave is dedicated to protecting children's futures through education, healthcare, and community support programs across India.
+            {/* Tagline */}
+            <p style={{ fontSize: 13, color: '#6b7280', lineHeight: 1.7, maxWidth: 260 }}>
+              Uthamar Thiru Kovil's service arm — building temples, feeding the hungry,
+              and funding futures for poor children through faith-driven compassion.
             </p>
 
             {/* Contact */}
-            <div className="space-y-3">
-              <a href="mailto:info@childsave.org" className="flex items-center gap-3 text-sm text-gray-400 hover:text-white transition-colors group">
-                <div className="w-8 h-8 bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-[#8B235E] transition-colors">
-                  <Mail size={14} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {[
+                { Icon: Mail,   href: 'mailto:info@makalsevai.org', text: 'info@makalsevai.org' },
+                { Icon: Phone,  href: 'tel:+914412345678',          text: '+91 44 1234 5678' },
+              ].map(({ Icon, href, text }) => (
+                <a key={href} href={href}
+                  className="hover:!text-orange-600 transition-colors"
+                  style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', fontSize: 13, color: '#6b7280' }}>
+                  <div style={{
+                    width: 30, height: 30, borderRadius: 8, flexShrink: 0,
+                    background: 'rgba(234,88,12,0.08)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <Icon size={13} style={{ color: T.saffron }} />
+                  </div>
+                  {text}
+                </a>
+              ))}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 13, color: '#6b7280' }}>
+                <div style={{
+                  width: 30, height: 30, borderRadius: 8, flexShrink: 0, marginTop: 2,
+                  background: 'rgba(234,88,12,0.08)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <MapPin size={13} style={{ color: T.saffron }} />
                 </div>
-                info@childsave.org
-              </a>
-              <a href="tel:+911234567890" className="flex items-center gap-3 text-sm text-gray-400 hover:text-white transition-colors group">
-                <div className="w-8 h-8 bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-[#8B235E] transition-colors">
-                  <Phone size={14} />
-                </div>
-                +91 12345 67890
-              </a>
-              <div className="flex items-start gap-3 text-sm text-gray-400">
-                <div className="w-8 h-8 bg-white/5 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <MapPin size={14} />
-                </div>
-                123, NGO Colony, Chennai,<br />Tamil Nadu — 600001
+                <span>Arrakattalai,<br />Tamil Nadu — 629 702</span>
               </div>
             </div>
 
             {/* Social */}
-            <div className="flex items-center gap-3">
-             {SOCIAL_LINKS.map(({ svg, href, label }) => (
-  <a key={label} href={href} aria-label={label}
-    className="w-9 h-9 bg-white/5 flex items-center justify-center text-gray-400 hover:bg-[#8B235E] hover:text-white transition-all"
-  >
-    {svg}
-  </a>
-))}
+            <div style={{ display: 'flex', gap: 8, paddingTop: 4 }}>
+              {SOCIAL_LINKS.map(({ icon, label, href }) => (
+                <a key={label} href={href} target="_blank" rel="noopener noreferrer"
+                  aria-label={label}
+                  className="hover:-translate-y-0.5 transition-all duration-200"
+                  style={{
+                    width: 34, height: 34, borderRadius: 8, fontSize: 16,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'rgba(234,88,12,0.08)',
+                    border: '1px solid rgba(234,88,12,0.15)',
+                    textDecoration: 'none',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.background = T.saffron)}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'rgba(234,88,12,0.08)')}
+                >
+                  {icon}
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* ── RIGHT: Nav Links ── */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
+          {/* ── RIGHT: Nav columns — same keys as Header ── */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
             {NAV_ITEMS.map((item) => (
               <div key={item.key}>
-                <div className="mb-4">
-                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">
+                {/* Column heading — mirrors NavTrigger two-line style */}
+                <div style={{ marginBottom: 14 }}>
+                  <p style={{
+                    fontSize: 9, fontWeight: 800, letterSpacing: '0.22em',
+                    textTransform: 'uppercase', color: T.navSubtle, margin: 0,
+                  }}>
                     {item.topText}
                   </p>
-                  <p className="text-sm font-bold text-white uppercase tracking-tight mt-0.5">
+                  <p style={{
+                    fontSize: 13, fontWeight: 700, textTransform: 'uppercase',
+                    letterSpacing: '-0.01em', color: T.navText, margin: '3px 0 8px',
+                  }}>
                     {item.bottomText}
                   </p>
-                  <div className="w-6 h-[2px] bg-[#009270] mt-2" />
+                  {/* Underline gradient — mirrors NavTrigger hover bar */}
+                  <div style={{
+                    width: 28, height: 2, borderRadius: 2,
+                    background: `linear-gradient(90deg,${T.saffron},${T.goldLight})`,
+                  }} />
                 </div>
-                <ul className="space-y-2.5">
-                  {item.columns.flat().map((link) => (
-                    <li key={link.href + link.label}>
-                      <Link
-                        href={link.href}
-                        className="text-[13px] text-gray-400 hover:text-white hover:pl-1.5 transition-all duration-200 block"
+
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {item.links.map((link) => (
+                    <li key={link.href}>
+                      <Link href={link.href}
+                        className="group flex items-center gap-1.5 hover:!text-orange-600 transition-colors"
+                        style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', textDecoration: 'none', letterSpacing: '0.03em' }}
                       >
+                        {/* Animated dash — mirrors DropdownLink in Header */}
+                        <span style={{
+                          display: 'inline-block', width: 0, height: 1.5, borderRadius: 2, flexShrink: 0,
+                          background: T.saffron, transition: 'width 250ms ease',
+                        }} className="group-hover:!w-2.5" />
                         {link.label}
                       </Link>
                     </li>
@@ -231,47 +228,58 @@ export default function Footer() {
         </div>
 
         {/* ── Newsletter ── */}
-        <div className="mt-12 sm:mt-16 border-t border-white/10 pt-10">
+        <div style={{ marginTop: 48, paddingTop: 32, borderTop: `1px solid ${T.border}` }}>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div>
-              <h3 className="text-base font-bold text-white uppercase tracking-wider">
+              <h3 style={{ fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.12em', color: T.navText, display: 'flex', alignItems: 'center', gap: 8, margin: 0 }}>
+                <DiyaIcon size={18} />
                 Stay Updated
               </h3>
-              <p className="text-sm text-gray-400 mt-1">
-                Get the latest news and impact stories from ChildSave.
+              <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 4 }}>
+                Get the latest news and seva stories from Makal Sevai Margam.
               </p>
             </div>
-            <div className="flex w-full sm:w-auto gap-0">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 sm:w-64 bg-white/5 border border-white/10 px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-[#8B235E] transition-colors"
+            <div style={{ display: 'flex', width: '100%', maxWidth: 360 }}>
+              <input type="email" placeholder="Enter your email"
+                style={{
+                  flex: 1, padding: '10px 14px', fontSize: 13, outline: 'none',
+                  background: '#fff', border: `1px solid ${T.border}`,
+                  borderRight: 'none', color: T.navText,
+                  borderRadius: '8px 0 0 8px',
+                }}
               />
-              <button className="bg-[#8B235E] text-white px-6 py-3 text-xs font-bold uppercase tracking-wider hover:bg-[#6b1b48] transition-colors flex-shrink-0">
+              <button style={{
+                padding: '10px 20px', fontSize: 11, fontWeight: 800,
+                textTransform: 'uppercase', letterSpacing: '0.08em',
+                color: '#fff', border: 'none', cursor: 'pointer', flexShrink: 0,
+                background: `linear-gradient(135deg,${T.saffron},${T.saffronDeep})`,
+                borderRadius: '0 8px 8px 0',
+                boxShadow: '0 2px 10px rgba(234,88,12,0.30)',
+              }}>
                 Subscribe
               </button>
             </div>
           </div>
         </div>
 
-        {/* ── Bottom Bar ── */}
-        <div className="mt-8 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-gray-500 text-center sm:text-left">
-            © {currentYear} ChildSave. All rights reserved. Registered NGO under Indian Trust Act.
+        {/* ── Bottom bar ── */}
+        <div style={{ marginTop: 28, paddingTop: 22, borderTop: `1px solid ${T.border}` }}
+          className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p style={{ fontSize: 10, color: '#9ca3af', margin: 0 }}>
+            © {currentYear} Makkal Sevai Margam · Uthamar Thiru Kovil, Arrakattalai. All rights reserved.
           </p>
-          <div className="flex flex-wrap justify-center sm:justify-end gap-4 sm:gap-6">
-            {['Privacy Policy', 'Terms of Use', 'Cookie Policy', 'Sitemap'].map((item) => (
-              
-              <a  key={item}
-                href="#"
-                className="text-xs text-gray-500 hover:text-white transition-colors"
-              >
-                {item}
+          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', justifyContent: 'center' }}>
+            {['Privacy Policy', 'Terms of Use', 'Cookie Policy', 'Sitemap'].map(label => (
+              <a key={label} href="#"
+                className="hover:text-orange-600 transition-colors"
+                style={{ fontSize: 10, color: '#9ca3af', textDecoration: 'none' }}>
+                {label}
               </a>
             ))}
           </div>
         </div>
       </div>
+
     </footer>
   );
 }
